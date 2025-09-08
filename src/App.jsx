@@ -1,21 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css' 
-import Dashboard from './components/Dashboard'
-import Topbar from './components/Navbar'
-import Sidebar from './components/Sidebar'
+import { useState } from "react";
+import "./App.css";
+
+import Topbar from "./components/Navbar";
+import RoutesComp from "./route";
+import Sidebar from "./components/Sidebar";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
-        <Topbar />
-        <Dashboard  />
-
+      <Topbar />
+      <div style={{ display: "flex", gap: "100px" }}>
+        <Sidebar />
+        <div className="flex-grow-1 p-4" style={{ marginLeft: "220px" }}>
+          <RoutesComp />
+        </div>
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

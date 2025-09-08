@@ -5,7 +5,7 @@ function Topbar() {
   return (
     <Navbar bg="light" className="shadow-sm">
       <Container>
-        <Navbar.Brand>Admin Panel</Navbar.Brand>
+        <Navbar>Admin Panel</Navbar>
       </Container>
     </Navbar>
   );

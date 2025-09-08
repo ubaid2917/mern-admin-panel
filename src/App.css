@@ -1,0 +1,12 @@
+/* side bar */
+.link{
+   border-radius: 13px;
+   padding: 10px 20px !important;
+   text-decoration: none;
+   color: white;
+} 
+
+.link:hover {
+    background-color: rgba(250, 235, 215, 0.363);
+    color: rgb(0, 0, 0);
+} 
