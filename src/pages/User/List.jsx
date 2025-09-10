@@ -58,7 +58,7 @@ const List = () => {
                   <td>{user.phone}</td>
                   <td>{user.createdAt}</td>
                   <td>
-                    <button className="btn btn-sm btn-secondary">Edit</button>
+                    <Link to={`/users/edit/${user.id}`} className="btn btn-sm btn-secondary">Edit</Link>
                     <button className="btn btn-sm btn-danger ms-2">Delete</button>
                   </td>
                 </tr>
