@@ -1,11 +1,12 @@
 import React from "react";
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
-import { getUserList } from "../../API/user";
+import { deleteUser, getUserList } from "../../API/user";
+import Message from "../../components/Message";
 
 const List = () => {
   const [data, setData] = useState([]);
-
+  const [message, setMessage] = useState(false);
   useEffect(() => {
     getUser();
   }, []);
@@ -19,9 +20,27 @@ const List = () => {
     } catch (error) {
       alert("Something went wrong");
     }
-  };
+  };  
+
+  const handleDeleteUser = async (id) => {
+    try {
+       const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+      if (confirmDelete) {
+        const response = await deleteUser(id);
+        if (response.data.success !== false) {
+          setMessage("Record Deleted Successfully");
+          // alert("User deleted successfully");
+          getUser();
+        }
+      }
+    } catch (error) {
+      alert("Something went wrong")
+    }
+  }
 
   return (
+    <>
+     <Message message={message} />
     <div className=" mt-4">
       <div className="d-flex justify-content-between">
         <div>
@@ -51,10 +70,10 @@ const List = () => {
               {data.map((user, index) => (
                 <tr key={user.id}>
                   <td>{index + 1}</td>
-                  <td>{user.name}</td>
-                  <td>{user.email}</td>
+                  <td>{user.name || "N/A"}</td>
+                  <td>{user.email || "N/A"}</td>
                   <td>{user.phone || "N/A"} </td>
-                  <td>{user.country}</td>
+                  <td>{user.country || "N/A"}</td>
                   <td>{user.createdAt}</td>
                   <td>
                     <Link
@@ -63,7 +82,7 @@ const List = () => {
                     >
                       Edit
                     </Link>
-                    <button className="btn btn-sm btn-danger ms-2">
+                    <button onClick={() => handleDeleteUser(user.id)} className="btn btn-sm btn-danger ms-2">
                       Delete
                     </button>
                   </td>
@@ -74,6 +93,8 @@ const List = () => {
         </div>
       </div>
     </div>
+    </>
+     
   );
 };
 
