@@ -19,6 +19,7 @@ const RoutesComp = () => {
         <Route path="/product" element={<ProductList />} />
         <Route path="/category" element={<Catgory />} />
       </Routes>
+     
     </>
   );
 };

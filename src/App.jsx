@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 import Topbar from "./components/Navbar";
 import RoutesComp from "./route";
 import Sidebar from "./components/Sidebar";
+import Message from "./components/Message";
 
 function App() {
-  const [count, setCount] = useState(0);
+
 
   return (
     <>
@@ -17,6 +18,10 @@ function App() {
           <RoutesComp />
         </div>
       </div>
+      <div>
+      
+       <Message />
+    </div>
     </>
   );
 }
