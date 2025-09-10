@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import Message from "../../components/Message";
 import App from "../../App";
-
+import { addUser } from "../../../src/API/user";
 function AddUser() {
   const navigate = useNavigate();
   const [validated, setValidated] = useState(false);
@@ -24,19 +24,26 @@ function AddUser() {
     console.log("event name", name);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const form = event.target;
+  const handleSubmit = async (event) => {
+    try {
+      event.preventDefault();
+      const form = event.target;
 
-    if (form.checkValidity() === false) {
-      //   event.stopPropagation();
-    } else {
-      console.log("Form submitted successfully!", formData);
-      setMessage("Record Created Successfully");
-      navigate("/users/list");
+      if (form.checkValidity() === false) {
+      } else {  
+         const response = await addUser(formData); 
+
+         console.log('response', response)
+
+        console.log("Form submitted successfully!", formData);
+        setMessage("Record Created Successfully");
+        navigate("/users/list");
+      }
+
+      setValidated(true);
+    } catch (error) {
+        alert('Something went wrong')
     }
-
-    setValidated(true);
   };
 
   return (
