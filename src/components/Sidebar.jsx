@@ -14,7 +14,7 @@ function Sidebar() {
         <Link className="link" to={'/'} > 
            Dashboad
         </Link>
-        <Link className="link" to={'/users'} > 
+        <Link className="link" to={'/users/list'} > 
            User
         </Link>
         <Link className="link" to={'/product'} > 
