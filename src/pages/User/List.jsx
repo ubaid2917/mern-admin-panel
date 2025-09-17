@@ -75,7 +75,16 @@ const List = () => {
                       <td>{user.email || "N/A"}</td>
                       <td>{user.phone || "N/A"} </td>
                       <td>{user.country || "N/A"}</td>
-                      <td>{user.createdAt}</td>
+                      <td>{new Date(user.created).toLocaleString("en-US", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                        hour12: true,
+                      })}</td>
+
                       <td>
                         <Link
                           to={`/users/edit/${user.id}`}

@@ -3,7 +3,7 @@ import { invokeApi } from "../utils/invokeApi";
 // get user
 export const getUserList = async () => {
   const reqObj = {
-    path: `/sample/get`,
+    path: `/user/get`,
     method: "GET",
     headers: {},
   };
@@ -13,7 +13,7 @@ export const getUserList = async () => {
 // add user
 export const addUser = async (data) => {
   const reqObj = {
-    path: `/sample/add`,
+    path: `/user/add`,
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -26,7 +26,7 @@ export const addUser = async (data) => {
 // get single user
 export const getOneUser = async (id) => {
   const reqObj = {
-    path: `/sample/get/${id}`,
+    path: `/user/get/${id}`,
     method: "GET",
     headers: {},
   };
@@ -37,7 +37,7 @@ export const getOneUser = async (id) => {
 export const updateOneUser = async (id, data) => {
   console.log("id", id);
   const reqObj = {
-    path: `/sample/update/${id}`,
+    path: `/user/update/${id}`,
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -50,7 +50,7 @@ export const updateOneUser = async (id, data) => {
 // delete user
 export const deleteUser = async (data) => {
   const reqObj = {
-    path: `/sample/delete/${data}`,
+    path: `/user/delete/${data}`,
     method: "DELETE",
   };
   return invokeApi(reqObj);

@@ -62,17 +62,17 @@ function AddUser() {
 
           <div className="row mb-3">
             <div className="form-group col-lg-6">
-              <label htmlFor="inputFname1">First Name</label>
+              <label htmlFor="inputFname1">Name</label>
               <input
                 type="text"
                 className="form-control"
                 id="inputFname1"
-                name="firstName"
-                value={formData.firstName}
+                name="name"
+                value={formData.name}
                 onChange={handleOnChange}
                 required
               />
-              <div className="invalid-feedback">First name is required</div>
+              <div className="invalid-feedback">Name is required</div>
             </div>
             <div className="form-group col-lg-6">
               <label htmlFor="inputLname1">Last Name</label>

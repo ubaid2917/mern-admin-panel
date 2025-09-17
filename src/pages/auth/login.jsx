@@ -58,10 +58,14 @@ function Login({ setToken }) {
         onSubmit={handleSubmit}
       >
         <div className="mb-3 text-center">
-          <p className="text-danger">{error}</p>
+
           <h4>Welcome back</h4>
         </div>
-
+        {
+          error && (
+            <div className="alert alert-danger  text-center text-danger">{error}</div>
+          )
+        }
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
             Email address
