@@ -5,18 +5,22 @@ import Topbar from "./components/Navbar";
 import RoutesComp from "./route";
 import Sidebar from "./components/Sidebar";
 import Message from "./components/Message";
-import { Route, Routes } from "react-router";
+import { Route, Routes , Navigate, useNavigate} from "react-router"; 
+
 function App() {
 
-  const [token, setToken] = useState(localStorage.getItem("token")); 
+  const [token, setToken] = useState(localStorage.getItem("token"));   
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if(token){
       localStorage.setItem("token", token);
     }else{
       localStorage.removeItem("token");
+      navigate("/auth/login")
     }
-  }, [token])
+  }, [token])   
 
   return (
     <>
