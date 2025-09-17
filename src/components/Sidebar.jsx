@@ -11,7 +11,7 @@ function Sidebar() {
     >
       <h4>Admin Panel</h4>
       <ul className=" nav flex-column ">
-        <Link className="link" to={'/'} > 
+        <Link className="link" to={'/dashboard'} > 
            Dashboad
         </Link>
         <Link className="link" to={'/users/list'} > 
@@ -23,6 +23,16 @@ function Sidebar() {
         <Link className="link" to={'/category'} > 
            Category 
         </Link>
+
+
+
+         <Link
+    className="link"
+    to="/auth/login"
+    style={{ position: "absolute", fontSize: "18px", bottom: "50px", left: "20px" }}
+  >
+    Logout
+  </Link>
         
         
         

@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router";
+import { Route, Routes, Navigate } from "react-router";
 import Dashboard from "./components/Dashboard";
 import List from "./pages/User/List";
 import AddUser from "./pages/User/Add";
@@ -8,11 +8,14 @@ import ProductList from "./pages/Product/List";
 import Catgory from "./pages/Category/List";
 
 
-const RoutesComp = () => {
+const RoutesComp = () => { 
+  
   return (
     <>
       <Routes>
-        
+         
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="users">
           <Route path="list" element={<List />} />
           <Route path="add" element={<AddUser />} />

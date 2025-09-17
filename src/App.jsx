@@ -8,16 +8,24 @@ import Message from "./components/Message";
 import { Route, Routes } from "react-router";
 function App() {
 
-  const [token, setToken] = useState(true)
+  const [token, setToken] = useState(localStorage.getItem("token")); 
+
+  useEffect(() => {
+    if(token){
+      localStorage.setItem("token", token);
+    }else{
+      localStorage.removeItem("token");
+    }
+  }, [token])
 
   return (
     <>
       {
-        token === true ? (
+        !token ? (
           <Routes>
 
             <Route path="auth">
-              <Route path="login" element={<Login />} />
+              <Route path="login" element={<Login setToken={setToken} />} />
 
             </Route>
           </Routes>

@@ -13,7 +13,7 @@ import { invokeApi } from "../utils/invokeApi";
 // add user
 export const loginUser = async (data) => {
   const reqObj = {
-    path: `/user/add`,
+    path: `/auth/login`,
     method: "POST",
     headers: {
       "Content-Type": "application/json",

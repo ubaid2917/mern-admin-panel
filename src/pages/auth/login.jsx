@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import Message from "../../components/Message";
-import { addUser } from "../../API/user";
+import { loginUser } from "../../API/auth";
 
-function Login() {
+function Login({ setToken }) {
   const navigate = useNavigate();
   const [validated, setValidated] = useState(false);
   const [message, setMessage] = useState(false);
+  const [error, setError] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -25,11 +26,19 @@ function Login() {
       event.stopPropagation();
     } else {
       try {
-        const response = await addUser(formData);
+        const response = await loginUser(formData);
         console.log("response", response);
-        setMessage("Record Created Successfully");
-        navigate("/users/list");
+
+        if (response?.success === false) {
+          return setError(response?.message);
+        }
+        localStorage.setItem("token", response?.data?.token);
+        setToken(response?.data?.token);
+        setMessage("Login Successfully");
+
+        navigate("/dashboard");
       } catch (error) {
+        console.log("error", error);
         setMessage("Something went wrong");
       }
     }
@@ -43,13 +52,13 @@ function Login() {
 
       <form
         noValidate
-        className={`card p-4 shadow needs-validation ${
-          validated ? "was-validated" : ""
-        }`}
+        className={`card p-4 shadow needs-validation ${validated ? "was-validated" : ""
+          }`}
         style={{ width: "450px" }}
         onSubmit={handleSubmit}
       >
         <div className="mb-3 text-center">
+          <p className="text-danger">{error}</p>
           <h4>Welcome back</h4>
         </div>
 
@@ -81,7 +90,7 @@ function Login() {
             value={formData.password}
             onChange={handleOnChange}
             required
-          
+
           />
           <div className="invalid-feedback">
             Password must be required
