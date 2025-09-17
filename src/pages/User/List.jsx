@@ -20,11 +20,11 @@ const List = () => {
     } catch (error) {
       alert("Something went wrong");
     }
-  };  
+  };
 
   const handleDeleteUser = async (id) => {
     try {
-       const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+      const confirmDelete = window.confirm("Are you sure you want to delete this user?");
       if (confirmDelete) {
         const response = await deleteUser(id);
         if (response.data.success !== false) {
@@ -40,61 +40,73 @@ const List = () => {
 
   return (
     <>
-     <Message message={message} />
-    <div className=" mt-4">
-      <div className="d-flex justify-content-between">
-        <div>
-          <h2 className="mb-4">User List</h2>
+      <Message message={message} />
+      <div className=" mt-4">
+        <div className="d-flex justify-content-between">
+          <div>
+            <h2 className="mb-4">User List</h2>
+          </div>
+          <div>
+            <Link to={"/users/add"} className="btn btn-secondary">
+              Add User
+            </Link>
+          </div>
         </div>
-        <div>
-          <Link to={"/users/add"} className="btn btn-secondary">
-            Add User
-          </Link>
-        </div>
-      </div>
-      <div className="card shadow-sm">
-        <div className="card-body">
-          <table className="table table-hover text-center">
-            <thead className="table-dark">
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Country</th>
-                <th>Created At</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((user, index) => (
-                <tr key={user.id}>
-                  <td>{index + 1}</td>
-                  <td>{user.name || "N/A"}</td>
-                  <td>{user.email || "N/A"}</td>
-                  <td>{user.phone || "N/A"} </td>
-                  <td>{user.country || "N/A"}</td>
-                  <td>{user.createdAt}</td>
-                  <td>
-                    <Link
-                      to={`/users/edit/${user.id}`}
-                      className="btn btn-sm btn-secondary"
-                    >
-                      Edit
-                    </Link>
-                    <button onClick={() => handleDeleteUser(user.id)} className="btn btn-sm btn-danger ms-2">
-                      Delete
-                    </button>
-                  </td>
+        <div className="card shadow-sm">
+          <div className="card-body">
+            <table className="table table-hover text-center">
+              <thead className="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Country</th>
+                  <th>Created At</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data && data.length > 0 ? (
+                  data.map((user, index) => (
+                    <tr key={user.id}>
+                      <td>{index + 1}</td>
+                      <td>{user.name || "N/A"}</td>
+                      <td>{user.email || "N/A"}</td>
+                      <td>{user.phone || "N/A"} </td>
+                      <td>{user.country || "N/A"}</td>
+                      <td>{user.createdAt}</td>
+                      <td>
+                        <Link
+                          to={`/users/edit/${user.id}`}
+                          className="btn btn-sm btn-secondary"
+                        >
+                          Edit
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteUser(user.id)}
+                          className="btn btn-sm btn-danger ms-2"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="text-center text-muted">
+                      No data found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+
+            </table>
+          </div>
         </div>
       </div>
-    </div>
     </>
-     
+
   );
 };
 

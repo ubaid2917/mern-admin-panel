@@ -7,11 +7,12 @@ import EditUser from "./pages/User/Edit";
 import ProductList from "./pages/Product/List";
 import Catgory from "./pages/Category/List";
 
+
 const RoutesComp = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        
         <Route path="users">
           <Route path="list" element={<List />} />
           <Route path="add" element={<AddUser />} />
