@@ -7,12 +7,17 @@ import Message from "../../components/Message";
 const List = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(false);
+  const [search, setSearch] = useState("");
+       
+
+  console.log('search', search)
+
   useEffect(() => {
     getUser();
-  }, []);
-  const getUser = async () => {
+  }, [search]);
+  const getUser = async ( ) => {
     try {
-      const response = await getUserList();
+      const response = await getUserList(search);
 
       if (response.statusCode !== 200) {
       }
@@ -38,6 +43,12 @@ const List = () => {
     }
   }
 
+  const handleSearch = (event) => {
+    const value = event.target.value;
+    setSearch(value);
+    getUser(value)
+  };
+
   return (
     <>
       <Message message={message} />
@@ -47,13 +58,17 @@ const List = () => {
             <h2 className="mb-4">User List</h2>
           </div>
           <div>
-            <Link to={"/users/add"} className="btn btn-secondary">
+            <Link to={"/users/add"} className="btn" style={{ background: '#212529', color: '#fff' }}>
               Add User
             </Link>
           </div>
         </div>
         <div className="card shadow-sm">
           <div className="card-body">
+            <div className="mb-4 d-flex justify-content-end float-end" style={{ width: "300px" }}>
+
+              <input type="search" className="form-control" value={search} onChange={handleSearch} placeholder="Search" />
+            </div>
             <table className="table table-hover text-center">
               <thead className="table-dark">
                 <tr>
@@ -88,7 +103,7 @@ const List = () => {
                       <td>
                         <Link
                           to={`/users/edit/${user.id}`}
-                          className="btn btn-sm btn-secondary"
+                          className="btn btn-sm " style={{ background: '#212529', color: '#fff' }}
                         >
                           Edit
                         </Link>

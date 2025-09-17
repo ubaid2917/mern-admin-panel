@@ -11,9 +11,10 @@ function AddUser() {
     firstName: "",
     lastName: "",
     email: "",
+    phone: "",
     password: "",
     city: "",
-    state: "",
+    country: "",
     zip: "",
   });
 
@@ -75,22 +76,6 @@ function AddUser() {
               <div className="invalid-feedback">Name is required</div>
             </div>
             <div className="form-group col-lg-6">
-              <label htmlFor="inputLname1">Last Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="inputLname1"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleOnChange}
-                required
-              />
-              <div className="invalid-feedback">Last name is required</div>
-            </div>
-          </div>
-
-          <div className="row mb-3">
-            <div className="form-group col-lg-6">
               <label htmlFor="inputEmail4">Email</label>
               <input
                 type="email"
@@ -102,6 +87,23 @@ function AddUser() {
                 required
               />
               <div className="invalid-feedback">Enter a valid email</div>
+            </div>
+          </div>
+
+          <div className="row mb-3">
+            <div className="form-group col-lg-6">
+              <label htmlFor="inputEmail4">Phone</label>
+              <input
+                type="number"
+                className="form-control"
+                id="inputPhone4"
+                name="phone"
+                value={formData.phone}
+                onChange={handleOnChange}
+                required
+                min={11}
+              />
+              <div className="invalid-feedback">Phone is required</div>
             </div>
             <div className="form-group col-lg-6">
               <label htmlFor="inputPassword4">Password</label>
@@ -122,6 +124,24 @@ function AddUser() {
           </div>
 
           <div className="row mb-3">
+             <div className="form-group col-md-4">
+              <label htmlFor="inputState">Province</label>
+              <select
+                id="inputState"
+                name="country"
+                className="form-control"
+                value={formData.state}
+                onChange={handleOnChange}
+                required
+              >
+                <option value="">Select Province </option>
+                <option>Punjab</option>
+                <option>Sindh</option>
+                <option>KPK</option>
+                <option>Balochistan</option>
+              </select>
+              <div className="invalid-feedback">Please select a Province</div>
+            </div>
             <div className="form-group col-md-6">
               <label htmlFor="inputCity">City</label>
               <input
@@ -135,24 +155,7 @@ function AddUser() {
               />
               <div className="invalid-feedback">City is required</div>
             </div>
-            <div className="form-group col-md-4">
-              <label htmlFor="inputState">State</label>
-              <select
-                id="inputState"
-                name="state"
-                className="form-control"
-                value={formData.state}
-                onChange={handleOnChange}
-                required
-              >
-                <option value="">Choose...</option>
-                <option>Punjab</option>
-                <option>Sindh</option>
-                <option>KPK</option>
-                <option>Balochistan</option>
-              </select>
-              <div className="invalid-feedback">Please select a state</div>
-            </div>
+           
             <div className="form-group col-md-2">
               <label htmlFor="inputZip">Zip</label>
               <input
@@ -169,8 +172,8 @@ function AddUser() {
           </div>
 
           <div>
-            <button type="submit" className="btn btn-secondary ">
-              Sign in
+            <button type="submit" className="btn float-end" style={{ background: '#212529', color: '#fff' }}>
+              Submit
             </button>
           </div>
         </form>
