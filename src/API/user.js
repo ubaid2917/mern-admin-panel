@@ -1,10 +1,10 @@
 import { invokeApi } from "../utils/invokeApi";
 
 // get user
-export const getUserList = async (search) => { 
+export const getUserList = async (search, limit, page) => { 
   //  console.log('search')
   const reqObj = {
-    path: `/user/get?search=${search}`,
+    path: `/user/get?search=${search}&limit=${limit}&page=${page}`,
     method: "GET",
     headers: {},
   };

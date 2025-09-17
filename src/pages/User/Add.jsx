@@ -21,10 +21,9 @@ function AddUser() {
   const handleOnChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
-    console.log("event", value);
-    console.log("event name", name);
   };
-
+ 
+  // handle submit
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
@@ -33,10 +32,6 @@ function AddUser() {
       if (form.checkValidity() === false) {
       } else {  
          const response = await addUser(formData); 
-
-         console.log('response', response)
-
-        console.log("Form submitted successfully!", formData);
         setMessage("Record Created Successfully");
         navigate("/users/list");
       }

@@ -8,16 +8,19 @@ const List = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
-       
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1); 
 
-  console.log('search', search)
+  console.log("page", page)
 
   useEffect(() => {
     getUser();
-  }, [search]);
-  const getUser = async ( ) => {
+  }, [search, limit, page]);
+
+  // get user
+  const getUser = async () => {
     try {
-      const response = await getUserList(search);
+      const response = await getUserList(search, limit, page);
 
       if (response.statusCode !== 200) {
       }
@@ -27,6 +30,7 @@ const List = () => {
     }
   };
 
+  // handle delete
   const handleDeleteUser = async (id) => {
     try {
       const confirmDelete = window.confirm("Are you sure you want to delete this user?");
@@ -43,11 +47,24 @@ const List = () => {
     }
   }
 
+  // handle search
   const handleSearch = (event) => {
     const value = event.target.value;
     setSearch(value);
-    getUser(value)
   };
+
+  const handleLimit = (event) => {
+    const value = event.target.value;
+    setLimit(value)
+  }
+  const handlePrevPage = () => {
+    if (page > 1) {
+      setPage(page - 1)
+    }
+  }
+  const handleNextPage = () => {
+    setPage(page + 1)
+  }
 
   return (
     <>
@@ -125,7 +142,56 @@ const List = () => {
                 )}
               </tbody>
 
+
+
             </table>
+            <div className="row mt-3">
+              <div className="col-12 d-flex justify-content-center align-items-center`" >
+                <div className="d-flex align-items-center gap-3">
+                  <p className="mb-0">Rows per page</p>
+                  <select
+                    name="limit"
+                    onChange={handleLimit}
+                    className="form-select text-center"
+                    style={{ width: "100px" }}
+                  >
+                    <option value="10">10</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                  </select>
+
+                  <div className="d-flex align-items-center gap-3">
+                    <nav aria-label="Page navigation example">
+                      <ul className="pagination justify-content-center">
+                        <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
+                          <button className="page-link" onClick={handlePrevPage} disabled={page === 1}>
+                            Previous
+                          </button>
+                        </li>
+
+                        <li className="page-item disabled">
+                          <span className="page-link">
+                            Page {page}
+                          </span>
+                        </li>
+
+                        <li className="page-item">
+                          <button className="page-link" onClick={handleNextPage}>
+                            Next
+                          </button>
+                        </li>
+                      </ul>
+                    </nav>
+
+                  </div>
+                </div>
+
+              </div>
+
+
+            </div>
+
           </div>
         </div>
       </div>
