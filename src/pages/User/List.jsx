@@ -9,7 +9,7 @@ const List = () => {
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(1); 
+  const [page, setPage] = useState(1);
 
   console.log("page", page)
 
@@ -145,9 +145,10 @@ const List = () => {
 
 
             </table>
-            <div className="row mt-3">
-              <div className="col-12 d-flex justify-content-center align-items-center`" >
-                <div className="d-flex align-items-center gap-3">
+            <div className="row mt-3 align-items-center">
+              {/* Rows per page center me */}
+              <div className="col-12 col-md-6 d-flex justify-content-center">
+                <div className="d-flex align-items-center gap-2">
                   <p className="mb-0">Rows per page</p>
                   <select
                     name="limit"
@@ -160,37 +161,38 @@ const List = () => {
                     <option value="100">100</option>
                     <option value="200">200</option>
                   </select>
-
-                  <div className="d-flex align-items-center gap-3">
-                    <nav aria-label="Page navigation example">
-                      <ul className="pagination justify-content-center">
-                        <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
-                          <button className="page-link" onClick={handlePrevPage} disabled={page === 1}>
-                            Previous
-                          </button>
-                        </li>
-
-                        <li className="page-item disabled">
-                          <span className="page-link">
-                            Page {page}
-                          </span>
-                        </li>
-
-                        <li className="page-item">
-                          <button className="page-link" onClick={handleNextPage}>
-                            Next
-                          </button>
-                        </li>
-                      </ul>
-                    </nav>
-
-                  </div>
                 </div>
-
               </div>
 
+              {/* Pagination right corner pe */}
+              <div className="col-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
+                <nav aria-label="Page navigation example">
+                  <ul className="pagination">
+                    <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
+                      <button
+                        className="page-link"
+                        onClick={handlePrevPage}
+                        disabled={page === 1} 
+                        style={{ color: '#212529', }}
+                      >
+                        Previous
+                      </button>
+                    </li>
 
+                    <li className="page-item disabled">
+                      <span className="page-link">Page {page}</span>
+                    </li>
+
+                    <li className="page-item">
+                      <button className="page-link" onClick={handleNextPage} style={{ color: '#212529',  }}>
+                        Next
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
             </div>
+
 
           </div>
         </div>
