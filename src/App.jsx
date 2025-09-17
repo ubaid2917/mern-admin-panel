@@ -33,7 +33,7 @@ function App() {
           <>
             <Topbar />
             <div style={{ display: "flex", gap: "100px" }}>
-              <Sidebar />
+              <Sidebar setToken={setToken} />
               <div className="flex-grow-1 p-4" style={{ marginLeft: "220px" }}>
                 <RoutesComp />
               </div>
