@@ -1,30 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { useEffect, useState } from "react";
 import { deleteUser, getUserList } from "../../API/user";
 import Message from "../../components/Message";
+import Pagination from "../../components/Pagination";
 
 const List = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(1);
 
-  console.log("page", page)
-
-  useEffect(() => {
-    getUser();
-  }, [search, limit, page]);
 
   // get user
-  const getUser = async () => {
+  const getUser = async ({ page, limit }) => {
     try {
       const response = await getUserList(search, limit, page);
-
-      if (response.statusCode !== 200) {
-      }
+      if (response.status !== 200) return;
       setData(response?.data?.data);
+
     } catch (error) {
       alert("Something went wrong");
     }
@@ -38,14 +30,13 @@ const List = () => {
         const response = await deleteUser(id);
         if (response.data.success !== false) {
           setMessage("Record Deleted Successfully");
-          // alert("User deleted successfully");
-          getUser();
+          getUser({ page: 1, limit: 10 }); // reset after delete
         }
       }
     } catch (error) {
       alert("Something went wrong")
     }
-  }
+  };
 
   // handle search
   const handleSearch = (event) => {
@@ -53,39 +44,31 @@ const List = () => {
     setSearch(value);
   };
 
-  const handleLimit = (event) => {
-    const value = event.target.value;
-    setLimit(value)
-  }
-  const handlePrevPage = () => {
-    if (page > 1) {
-      setPage(page - 1)
-    }
-  }
-  const handleNextPage = () => {
-    setPage(page + 1)
-  }
+  // search
+  useEffect(() => {
+    getUser({ page: 1, limit: 10 });
+  }, [search]);
 
   return (
     <>
       <Message message={message} />
-      <div className=" mt-4">
+      <div className="mt-1">
         <div className="d-flex justify-content-between">
           <div>
             <h2 className="mb-4">User List</h2>
           </div>
           <div>
-            <Link to={"/users/add"} className="btn" style={{ background: '#212529', color: '#fff' }}>
-              Add User
-            </Link>
+            <Link to={"/users/add"} className="btn" style={{ background: '#212529', color: '#fff' }}> Add User </Link>
           </div>
         </div>
+
         <div className="card shadow-sm">
           <div className="card-body">
-            <div className="mb-4 d-flex justify-content-end float-end" style={{ width: "300px" }}>
+            <div className="mb-4 d-flex justify-content-end float-end" style={{ width: "300px" }}> 
+              <input type="search" className="form-control" value={search} onChange={handleSearch} placeholder="Search" /> 
+              </div>
 
-              <input type="search" className="form-control" value={search} onChange={handleSearch} placeholder="Search" />
-            </div>
+            {/* Table */}
             <table className="table table-hover text-center">
               <thead className="table-dark">
                 <tr>
@@ -99,28 +82,30 @@ const List = () => {
                 </tr>
               </thead>
               <tbody>
-                {data && data.length > 0 ? (
+                {data?.length > 0 ? (
                   data.map((user, index) => (
                     <tr key={user.id}>
                       <td>{index + 1}</td>
                       <td>{user.name || "N/A"}</td>
                       <td>{user.email || "N/A"}</td>
-                      <td>{user.phone || "N/A"} </td>
+                      <td>{user.phone || "N/A"}</td>
                       <td>{user.country || "N/A"}</td>
-                      <td>{new Date(user.created).toLocaleString("en-US", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                        hour12: true,
-                      })}</td>
-
+                      <td>
+                        {new Date(user.created).toLocaleString("en-US", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          hour12: true,
+                        })}
+                      </td>
                       <td>
                         <Link
                           to={`/users/edit/${user.id}`}
-                          className="btn btn-sm " style={{ background: '#212529', color: '#fff' }}
+                          className="btn btn-sm"
+                          style={{ background: '#212529', color: '#fff' }}
                         >
                           Edit
                         </Link>
@@ -141,64 +126,14 @@ const List = () => {
                   </tr>
                 )}
               </tbody>
-
-
-
             </table>
-            <div className="row mt-3 align-items-center">
-              {/* Rows per page center me */}
-              <div className="col-12 col-md-6 d-flex justify-content-center">
-                <div className="d-flex align-items-center gap-2">
-                  <p className="mb-0">Rows per page</p>
-                  <select
-                    name="limit"
-                    onChange={handleLimit}
-                    className="form-select text-center"
-                    style={{ width: "100px" }}
-                  >
-                    <option value="10">10</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="200">200</option>
-                  </select>
-                </div>
-              </div>
 
-              {/* Pagination right corner pe */}
-              <div className="col-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
-                <nav aria-label="Page navigation example">
-                  <ul className="pagination">
-                    <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
-                      <button
-                        className="page-link"
-                        onClick={handlePrevPage}
-                        disabled={page === 1} 
-                        style={{ color: '#212529', }}
-                      >
-                        Previous
-                      </button>
-                    </li>
-
-                    <li className="page-item disabled">
-                      <span className="page-link">Page {page}</span>
-                    </li>
-
-                    <li className="page-item">
-                      <button className="page-link" onClick={handleNextPage} style={{ color: '#212529',  }}>
-                        Next
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-            </div>
-
-
+            {/* ✅ Pagination child */}
+            <Pagination onChange={getUser} />
           </div>
         </div>
       </div>
     </>
-
   );
 };
 
