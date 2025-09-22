@@ -1,0 +1,141 @@
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router";
+import { deleteUser, getPatientList } from "../../API/patients";
+import Message from "../../components/Message";
+import Pagination from "../../components/Pagination";
+
+const PatientList = () => {
+  const [data, setData] = useState([]);
+  const [message, setMessage] = useState(false);
+  const [search, setSearch] = useState("");
+ 
+  // get user
+  const getUser = async ({ page, limit }) => {
+    try {
+      const response = await getPatientList(search, limit, page);  
+
+      console.log('response', response)
+      if (response.status !== 200) return;
+      setData(response?.data?.data);
+
+    } catch (error) {
+      alert("Something went wrong");
+    }
+  };
+
+  // handle delete
+  const handleDeleteUser = async (id) => {
+    try {
+      const confirmDelete = window.confirm("Are you sure you want to delete this data?");
+      if (confirmDelete) {
+        const response = await deleteUser(id);
+        if (response.data.success !== false) {
+          setMessage("Record Deleted Successfully");
+          getUser({ page: 1, limit: 10 }); 
+        }
+      }
+    } catch (error) {
+      alert("Something went wrong")
+    }
+  };
+
+  // handle search
+  const handleSearch = (event) => {
+    const value = event.target.value;
+    setSearch(value);
+  };
+
+  // search
+  useEffect(() => {
+    getUser({ page: 1, limit: 10 });
+  }, [search]);
+
+  return (
+    <>
+      <Message message={message} />
+      <div className="mt-1">
+        <div className="d-flex justify-content-between">
+          <div>
+            <h2 className="mb-4">Patient List</h2>
+          </div>
+          <div>
+            <Link to={"/patients/add"} className="btn" style={{ background: '#212529', color: '#fff' }}> Add Patient </Link>
+          </div>
+        </div>
+
+        <div className="card shadow-sm">
+          <div className="card-body">
+            <div className="mb-4 d-flex justify-content-end float-end" style={{ width: "300px" }}> 
+              <input type="search" className="form-control" value={search} onChange={handleSearch} placeholder="Search" /> 
+              </div>
+
+            {/* Table */}
+            <table className="table table-hover text-center">
+              <thead className="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Patient Name</th>
+                  <th>Father Name</th>
+                  <th>Gender</th>
+                  <th>Country</th>
+                  <th>Created At</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.length > 0 ? (
+                  data.map((user, index) => (
+                    <tr key={user.id}>
+                      <td>{index + 1}</td>
+                      <td>{user.name || "N/A"}</td>
+                      <td>{user.email || "N/A"}</td>
+                      <td>{user.phone || "N/A"}</td>
+                      <td>{user.country || "N/A"}</td>
+                      <td>
+                        {new Date(user.created).toLocaleString("en-US", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          hour12: true,
+                        })}
+                      </td>
+                      <td>
+                        <Link
+                          to={`/users/edit/${user.id}`}
+                          className="btn btn-sm"
+                          style={{ background: '#212529', color: '#fff' }}
+                        >
+                          Edit
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteUser(user.id)}
+                          className="btn btn-sm btn-danger ms-2"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="text-center text-muted">
+                      No data found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            {/* ✅ Pagination child */}
+            <Pagination onChange={getUser} />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default PatientList;
