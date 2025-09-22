@@ -5,6 +5,7 @@ import List from "./pages/User/List";
 import AddUser from "./pages/User/Add";
 import EditUser from "./pages/User/Edit";
 import PatientList from "./pages/Patient/List";
+import AddPatient from "./pages/Patient/Add";
 import Catgory from "./pages/Category/List";
 
 
@@ -24,7 +25,7 @@ const RoutesComp = () => {
 
         <Route path="patients">
           <Route path="list" element={<PatientList />} />
-          <Route path="add" element={<AddUser />} />
+          <Route path="add" element={<AddPatient />} />
           <Route path="edit/:id" element={<EditUser />} />
         </Route>
 

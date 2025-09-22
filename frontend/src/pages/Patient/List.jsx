@@ -77,7 +77,8 @@ const PatientList = () => {
                   <th>Patient Name</th>
                   <th>Father Name</th>
                   <th>Gender</th>
-                  <th>Country</th>
+                  <th>Blood Group</th>
+                  <th>Pic</th>
                   <th>Created At</th>
                   <th>Action</th>
                 </tr>
@@ -85,12 +86,20 @@ const PatientList = () => {
               <tbody>
                 {data?.length > 0 ? (
                   data.map((user, index) => (
-                    <tr key={user.id}>
-                      <td>{index + 1}</td>
+                    <tr key={user.id} className="align-middle">
+                      <td >{index + 1}</td>
                       <td>{user.name || "N/A"}</td>
-                      <td>{user.email || "N/A"}</td>
-                      <td>{user.phone || "N/A"}</td>
-                      <td>{user.country || "N/A"}</td>
+                      <td>{user.fatherName || "N/A"}</td>
+                      <td>{user.gender || "N/A"}</td>
+                      <td>{user.bloodGroup || "N/A"}</td>
+                      <td > 
+                         <img style={{
+                        width: '120px',
+                        height: '120px',
+                        objectFit: 'cover',
+                        borderRadius: '50%'
+                      }} src={user.pic} alt="" /> 
+                        </td>
                       <td>
                         {new Date(user.created).toLocaleString("en-US", {
                           day: "2-digit",

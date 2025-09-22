@@ -12,13 +12,13 @@ export const getPatientList = async (search, limit, page) => {
 };
 
 // add user
-export const addUser = async (data) => {
+export const addPatient = async (data) => { 
   const reqObj = {
-    path: `/user/add`,
+    path: `/patient/add`,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    // headers: {
+    //   "Content-Type": "application/json",
+    // },
     postData: data,
   };
   return invokeApi(reqObj);
