@@ -73,7 +73,7 @@ const update = asyncErrorHandler(async (req, res) => {
 
   if (!status) {
     return error(res, "data not found");
-  }
+  }users
 
   return success(res, TEXTS.UPDATED, updatedData, 200);
 });
@@ -81,6 +81,7 @@ const update = asyncErrorHandler(async (req, res) => {
 const get = asyncErrorHandler(async (req, res) => {  
 
   const {search} = req.query;  
+  // seed()
 
   let whereCondition = {};
    

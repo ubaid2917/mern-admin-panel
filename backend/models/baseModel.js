@@ -1,12 +1,13 @@
-const { Model, DataTypes } = require("sequelize");
+const { Model, DataTypes, Sequelize } = require("sequelize");
 
 class BaseModel extends Model {
   static initBase(sequelize, attributes, options = {}) {
     return super.init(
       {
         id: {
-          type: DataTypes.INTEGER,
-          autoIncrement: true,
+          type: DataTypes.UUIDV4,
+          defaultValue: Sequelize.literal("gen_random_uuid()"),
+          allowNull: false,
           primaryKey: true,
         },
         ...attributes,

@@ -5,9 +5,9 @@ module.exports = {
     await queryInterface.createTable('patients', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.literal("gen_random_uuid()")
       },
       name: Sequelize.STRING,
       fatherName: Sequelize.STRING,

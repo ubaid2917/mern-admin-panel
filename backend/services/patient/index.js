@@ -2,7 +2,8 @@ const asyncErrorHandler = require("../../utils/asyncErrorHandler");
 const { TEXTS, STATUS_CODES } = require("../../config/constants");
 const { Patient } = require("../../models");
 const { success, error } = require("../../utils/response");
-const { handleFileUpload } = require("../../utils/fileUpload");
+const { handleFileUpload } = require("../../utils/fileUpload"); 
+const { faker } = require('@faker-js/faker');
 
 const create = asyncErrorHandler(async (req, res) => {
   try {
@@ -32,35 +33,31 @@ const create = asyncErrorHandler(async (req, res) => {
   }
 });
 
-
-const seed = asyncErrorHandler(async (req, res) => {
+const seed = async () => {
   try {
-     const users = [];
+    const patients = [];
 
     for (let i = 0; i < 200; i++) {
-      const hashedPassword = await bcrypt.hash("123456", 10); // default password for all
-
-      users.push({
+      patients.push({
         name: faker.person.fullName(),
-        email: faker.internet.email(),
-        phone: faker.phone.number("03#########"), // Pakistani style phone
-        country: faker.location.country(),
-        city: faker.location.city(),
-        zip: faker.location.zipCode(),
-        password: hashedPassword,
+        fatherName: faker.person.firstName(), // no fatherName in faker.internet
+        phone: faker.phone.number("03#########"),
+        gender: faker.helpers.arrayElement(['male', 'female']),
+        dob: faker.date.birthdate({ min: 18, max: 80, mode: 'age' }),
+        bloodGroup: faker.helpers.arrayElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+        martialStatus: faker.helpers.arrayElement(['married', 'single']),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
     }
 
-    await User.bulkCreate(users);
-
-    console.log("✅ 200 fake users inserted successfully!");
+    await Patient.bulkCreate(patients);
+    console.log("✅ 200 fake patients inserted successfully!");
   } catch (err) {
-    return error(res, "Failed to create user", [err.message], 500);
+    console.error("❌ Failed to create patients:", err.message);
   }
-})  
-
+};
+ 
 
 const update = asyncErrorHandler(async (req, res) => {
   const { id } = req.params;
@@ -80,8 +77,10 @@ const update = asyncErrorHandler(async (req, res) => {
   return success(res, TEXTS.UPDATED, updatedData, 200);
 });
 
-const get = asyncErrorHandler(async (req, res) => {  
+const get = asyncErrorHandler(async (req, res) => {    
 
+//  await seed()
+          
   const {search} = req.query;  
 
   let whereCondition = {};
