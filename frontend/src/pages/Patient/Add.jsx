@@ -7,7 +7,7 @@ function AddPatient() {
     const navigate = useNavigate();
     const [validated, setValidated] = useState(false);
     const [message, setMessage] = useState(false);
-    const [file, setFile] = useState(null);
+    const [file, setFile] = useState(null);  
     const [formData, setFormData] = useState({
         name: "",
         fatherName: "",
@@ -16,10 +16,10 @@ function AddPatient() {
         bloodGroup: "",
         martialStatus: "",
         dob: "",
-        pic: "",
+        file: "",
 
     });
-
+   
     const handleOnChange = (event) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
@@ -55,8 +55,10 @@ function AddPatient() {
             payload.append("martialStatus", formData.martialStatus);
             payload.append("dob", formData.dob);
 
+            console.log("payload", payload);
+
+            
             const response = await addPatient(payload);
-            console.log("response", response);
             setMessage("Record Created Successfully");
             navigate("/patients/list");
         } catch (error) {
@@ -207,7 +209,7 @@ function AddPatient() {
                                 type="file"
                                 className="form-control"
                                 id="inputPic"
-                                name="pic"
+                                name="file"
                                 onChange={handleFileChange}
                             />
                         </div>

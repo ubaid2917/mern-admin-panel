@@ -16,9 +16,10 @@ export const addPatient = async (data) => {
   const reqObj = {
     path: `/patient/add`,
     method: "POST",
-    // headers: {
-    //   "Content-Type": "application/json",
-    // },
+    headers: {
+      "Content-Type": "multipart/form-data", 
+       
+    },
     postData: data,
   };
   return invokeApi(reqObj);
