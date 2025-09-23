@@ -7,7 +7,8 @@ function AddPatient() {
     const navigate = useNavigate();
     const [validated, setValidated] = useState(false);
     const [message, setMessage] = useState(false);
-    const [file, setFile] = useState(null);  
+    const [variant, setVariant] = useState("success");
+    const [file, setFile] = useState(null);
     const [formData, setFormData] = useState({
         name: "",
         fatherName: "",
@@ -19,7 +20,7 @@ function AddPatient() {
         file: "",
 
     });
-   
+
     const handleOnChange = (event) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
@@ -39,14 +40,9 @@ function AddPatient() {
                 return;
             }
 
-            // use a different variable name (not formData)
             const payload = new FormData();
+            if (file) payload.append("file", file);
 
-            if (file) {
-                payload.append("file", file);
-            }
-
-            // append state values correctly
             payload.append("name", formData.name);
             payload.append("fatherName", formData.fatherName);
             payload.append("gender", formData.gender);
@@ -55,22 +51,31 @@ function AddPatient() {
             payload.append("martialStatus", formData.martialStatus);
             payload.append("dob", formData.dob);
 
-            console.log("payload", payload);
-
-            
             const response = await addPatient(payload);
-            setMessage("Record Created Successfully");
-            navigate("/patients/list");
+
+            if (response.status !== 200) {
+                setMessage("Something went wrong");
+                setVariant("danger");
+            } else if (response?.data?.success === false) {
+                setMessage(response?.data?.message);
+                setVariant("danger");
+            
+            } else {
+                setMessage(response?.data?.message || "Patient added successfully");
+                setVariant("success");
+                navigate("/patients/list");
+            }
         } catch (error) {
             console.error(error);
-            alert("Something went wrong");
+            setMessage("Something went wrong");
+            setVariant("danger");
         }
     };
 
 
     return (
         <>
-            <Message message={message} />
+            <Message message={message} variant={variant} />
             <div className="d-flex justify-content-center">
                 <form
                     noValidate
@@ -108,7 +113,7 @@ function AddPatient() {
                                 onChange={handleOnChange}
                                 required
                             />
-                            <div className="invalid-feedback">Father Name is requiredl</div>
+                            <div className="invalid-feedback">Father Name is required</div>
                         </div>
                     </div>
 

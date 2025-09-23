@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 
-const Message = ({ message }) => {
+const Message = ({ message, variant = "success" }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
   const location = useLocation();
@@ -13,6 +13,7 @@ const Message = ({ message }) => {
     const timer = setTimeout(() => {
       setShowAlert(false);
       localStorage.removeItem("showAlert");
+      localStorage.removeItem("variant");
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -21,12 +22,14 @@ const Message = ({ message }) => {
   useEffect(() => {
     if (message) {
       localStorage.setItem("showAlert", message);
+      localStorage.setItem("variant", variant);
       triggerAlert(message);
     }
-  }, [message]);
+  }, [message, variant]);
 
   useEffect(() => {
     const storedAlert = localStorage.getItem("showAlert");
+    const storedVariant = localStorage.getItem("variant");
     if (storedAlert) {
       triggerAlert(storedAlert);
     }
@@ -44,7 +47,7 @@ const Message = ({ message }) => {
             right: "10px",
             zIndex: 10000,
           }}
-          className="alert alert-success"
+          className={`alert alert-${variant}`}
         >
           {alertMsg}
         </div>
