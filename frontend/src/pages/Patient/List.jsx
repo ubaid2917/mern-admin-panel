@@ -10,7 +10,7 @@ const PatientList = () => {
   const [search, setSearch] = useState("");
  
   // get user
-  const getUser = async ({ page, limit }) => {
+  const getPatient = async ({ page, limit }) => {
     try {
       const response = await getPatientList(search, limit, page);  
 
@@ -31,7 +31,7 @@ const PatientList = () => {
         const response = await deleteUser(id);
         if (response.data.success !== false) {
           setMessage("Record Deleted Successfully");
-          getUser({ page: 1, limit: 10 }); 
+          getPatient({ page: 1, limit: 10 }); 
         }
       }
     } catch (error) {
@@ -41,13 +41,14 @@ const PatientList = () => {
 
   // handle search
   const handleSearch = (event) => {
-    const value = event.target.value;
-    setSearch(value);
+    const value = event.target.value; 
+     setSearch(value);
+    getPatient();
   };
 
   // search
   useEffect(() => {
-    getUser({ page: 1, limit: 10 });
+    getPatient({ page: 1, limit: 10 });
   }, [search]);
 
   return (
@@ -78,6 +79,7 @@ const PatientList = () => {
                   <th>Father Name</th>
                   <th>Gender</th>
                   <th>Blood Group</th>
+                  <th>Phone</th>
                   <th>Pic</th>
                   <th>Created At</th>
                   <th>Action</th>
@@ -92,6 +94,7 @@ const PatientList = () => {
                       <td>{user.fatherName || "N/A"}</td>
                       <td>{user.gender || "N/A"}</td>
                       <td>{user.bloodGroup || "N/A"}</td>
+                      <td>{user.phone || "N/A"}</td>
                       <td > 
                          <img style={{
                         width: '120px',
@@ -139,7 +142,7 @@ const PatientList = () => {
             </table>
 
             {/* ✅ Pagination child */}
-            <Pagination onChange={getUser} />
+            <Pagination onChange={getPatient} />
           </div>
         </div>
       </div>
