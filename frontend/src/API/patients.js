@@ -11,7 +11,7 @@ export const getPatientList = async (search, limit, page) => {
   return invokeApi(reqObj);
 };
 
-// add user
+// add record
 export const addPatient = async (data) => { 
   const reqObj = {
     path: `/patient/add`,
@@ -25,7 +25,7 @@ export const addPatient = async (data) => {
   return invokeApi(reqObj);
 };
 
-// get single user
+// get single record
 export const getOneUser = async (id) => {
   const reqObj = {
     path: `/user/get/${id}`,
@@ -35,7 +35,7 @@ export const getOneUser = async (id) => {
   return invokeApi(reqObj);
 };
 
-// update user
+// update record
 export const updateOneUser = async (id, data) => {
   console.log("id", id);
   const reqObj = {
@@ -49,10 +49,10 @@ export const updateOneUser = async (id, data) => {
   return invokeApi(reqObj);
 };
 
-// delete user
-export const deleteUser = async (data) => {
+// delete record
+export const deleteRec = async (data) => {
   const reqObj = {
-    path: `/user/delete/${data}`,
+    path: `/patient/delete/${data}`,
     method: "DELETE",
   };
   return invokeApi(reqObj);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { deleteUser, getPatientList } from "../../API/patients";
+import { deleteRec, getPatientList } from "../../API/patients";
 import Message from "../../components/Message";
 import Pagination from "../../components/Pagination";
 
@@ -28,7 +28,7 @@ const PatientList = () => {
     try {
       const confirmDelete = window.confirm("Are you sure you want to delete this data?");
       if (confirmDelete) {
-        const response = await deleteUser(id);
+        const response = await deleteRec(id);
         if (response.data.success !== false) {
           setMessage("Record Deleted Successfully");
           getPatient({ page: 1, limit: 10 }); 
