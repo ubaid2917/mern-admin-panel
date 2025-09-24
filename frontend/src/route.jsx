@@ -3,9 +3,10 @@ import { Route, Routes, Navigate } from "react-router";
 import Dashboard from "./components/Dashboard";
 import List from "./pages/User/List";
 import AddUser from "./pages/User/Add";
-import EditUser from "./pages/User/Edit";
+// import EditUser from "./pages/User/Edit";
 import PatientList from "./pages/Patient/List";
 import AddPatient from "./pages/Patient/Add";
+import EditPatient from "./pages/Patient/Edit";
 import Catgory from "./pages/Category/List";
 
 
@@ -20,13 +21,13 @@ const RoutesComp = () => {
         <Route path="users">
           <Route path="list" element={<List />} />
           <Route path="add" element={<AddUser />} />
-          <Route path="edit/:id" element={<EditUser />} />
+          {/* <Route path="edit/:id" element={<EditUser />} /> */}
         </Route>
 
         <Route path="patients">
           <Route path="list" element={<PatientList />} />
           <Route path="add" element={<AddPatient />} />
-          <Route path="edit/:id" element={<EditUser />} />
+          <Route path="edit/:id" element={<EditPatient />} />
         </Route>
 
         <Route path="/category" element={<Catgory />} />

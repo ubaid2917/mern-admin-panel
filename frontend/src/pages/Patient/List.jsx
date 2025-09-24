@@ -116,7 +116,7 @@ const PatientList = () => {
                       </td>
                       <td>
                         <Link
-                          to={`/users/edit/${user.id}`}
+                          to={`/patients/edit/${user.id}`}
                           className="btn btn-sm"
                           style={{ background: '#212529', color: '#fff' }}
                         >

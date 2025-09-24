@@ -26,9 +26,9 @@ export const addPatient = async (data) => {
 };
 
 // get single record
-export const getOneUser = async (id) => {
+export const getOneRec = async (id) => {
   const reqObj = {
-    path: `/user/get/${id}`,
+    path: `/patient/get/${id}`,
     method: "GET",
     headers: {},
   };
@@ -36,7 +36,7 @@ export const getOneUser = async (id) => {
 };
 
 // update record
-export const updateOneUser = async (id, data) => {
+export const updateOneRec = async (id, data) => {
   console.log("id", id);
   const reqObj = {
     path: `/user/update/${id}`,
