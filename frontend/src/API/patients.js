@@ -39,7 +39,7 @@ export const getOneRec = async (id) => {
 export const updateOneRec = async (id, data) => {
   console.log("id", id);
   const reqObj = {
-    path: `/user/update/${id}`,
+    path: `/patient/update/${id}`,
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
