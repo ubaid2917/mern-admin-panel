@@ -8,6 +8,9 @@ import PatientList from "./pages/Patient/List";
 import AddPatient from "./pages/Patient/Add";
 import EditPatient from "./pages/Patient/Edit";
 import Catgory from "./pages/Category/List";
+import AppointmentList from "./pages/Appointment/List";
+import AddAppointment from "./pages/Appointment/Add";
+import EditAppointment from "./pages/Appointment/Edit";
 
 
 const RoutesComp = () => { 
@@ -28,6 +31,11 @@ const RoutesComp = () => {
           <Route path="list" element={<PatientList />} />
           <Route path="add" element={<AddPatient />} />
           <Route path="edit/:id" element={<EditPatient />} />
+        </Route>
+        <Route path="appointments">
+          <Route path="list" element={<AppointmentList />} />
+          <Route path="add" element={<AddAppointment />} />
+          <Route path="edit/:id" element={<EditAppointment />} />
         </Route>
 
         <Route path="/category" element={<Catgory />} />

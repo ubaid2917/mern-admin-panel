@@ -27,6 +27,9 @@ function Sidebar({ setToken }) {
         <Link className="link" to={'/patients/list'} >
           Patients
         </Link>
+        <Link className="link" to={'/appointments/list'} >
+          Appointment
+        </Link>
         <Link className="link" to={'/category'} >
           Category
         </Link>

@@ -63,10 +63,13 @@ const List = () => {
         </div>
 
         <div className="card shadow-sm">
-          <div className="card-body">
-            <div className="mb-4 d-flex justify-content-end float-end" style={{ width: "300px" }}> 
-              <input type="search" className="form-control" value={search} onChange={handleSearch} placeholder="Search" /> 
-              </div>
+          <div className="card-body"> 
+            <div>
+              
+            </div>
+            <div className="mb-4 d-flex justify-content-end float-end" style={{ width: "300px" }}>
+              <input type="search" className="form-control" value={search} onChange={handleSearch} placeholder="Search" />
+            </div>
 
             {/* Table */}
             <table className="table table-hover text-center">
@@ -102,20 +105,26 @@ const List = () => {
                         })}
                       </td>
                       <td>
-                        <Link
-                          to={`/users/edit/${user.id}`}
-                          className="btn btn-sm"
-                          style={{ background: '#212529', color: '#fff' }}
-                        >
-                          Edit
-                        </Link>
-                        <button
-                          onClick={() => handleDeleteUser(user.id)}
-                          className="btn btn-sm btn-danger ms-2"
-                        >
-                          Delete
-                        </button>
+                        {user.isDead === true ? (
+                          <button
+                            className="btn btn-sm"
+                            style={{ background: '#ccc', color: user.isDead === true ? "#666" : "#000", cursor: 'not-allowed' }}
+                            disabled
+                          >
+                            Edit
+                          </button>
+                        ) : (
+                          <Link
+                            to={`/users/edit/${user.id}`}
+                            className="btn btn-sm"
+                            style={{ background: '#212529', color: '#fff' }}
+                          >
+                            Edit
+                          </Link>
+                        )}
                       </td>
+
+
                     </tr>
                   ))
                 ) : (
@@ -128,7 +137,7 @@ const List = () => {
               </tbody>
             </table>
 
-            {/* ✅ Pagination child */}
+            {/* Pagination child */}
             <Pagination onChange={getUser} />
           </div>
         </div>

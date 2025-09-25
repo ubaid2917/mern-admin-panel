@@ -6,7 +6,11 @@ export const getUserList = async (search, limit, page) => {
   const reqObj = {
     path: `/user/get?search=${search}&limit=${limit}&page=${page}`,
     method: "GET",
-    headers: {},
+    headers: {
+     Authorization: `Bearer ${localStorage.getItem(
+        "token"
+      )}`,
+    },
   };
   return invokeApi(reqObj);
 };
@@ -18,6 +22,9 @@ export const addUser = async (data) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+       Authorization: `Bearer ${localStorage.getItem(
+        "token"
+      )}`,
     },
     postData: data,
   };
@@ -29,7 +36,11 @@ export const getOneUser = async (id) => {
   const reqObj = {
     path: `/user/get/${id}`,
     method: "GET",
-    headers: {},
+    headers: {
+       Authorization: `Bearer ${localStorage.getItem(
+        "token"
+      )}`,
+    },
   };
   return invokeApi(reqObj);
 };
@@ -42,6 +53,9 @@ export const updateOneUser = async (id, data) => {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem(
+        "token"
+      )}`,
     },
     postData: data,
   };
@@ -53,6 +67,11 @@ export const deleteUser = async (data) => {
   const reqObj = {
     path: `/user/delete/${data}`,
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem(
+        "token"
+      )}`,
+    }
   };
   return invokeApi(reqObj);
 };

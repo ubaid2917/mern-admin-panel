@@ -1,24 +1,26 @@
 import { invokeApi } from "../utils/invokeApi";
 
 // get user
-export const getPatientList = async (search, limit, page) => { 
+export const getPatientList = async (search, limit, page) => {
   //  console.log('search')
   const reqObj = {
     path: `/patient/get?search=${search}&limit=${limit}&page=${page}`,
     method: "GET",
-    headers: {},
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
   };
   return invokeApi(reqObj);
 };
 
 // add record
-export const addPatient = async (data) => { 
+export const addPatient = async (data) => {
   const reqObj = {
     path: `/patient/add`,
     method: "POST",
     headers: {
-      "Content-Type": "multipart/form-data", 
-       
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     postData: data,
   };
@@ -30,7 +32,9 @@ export const getOneRec = async (id) => {
   const reqObj = {
     path: `/patient/get/${id}`,
     method: "GET",
-    headers: {},
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
   };
   return invokeApi(reqObj);
 };
@@ -43,6 +47,7 @@ export const updateOneRec = async (id, data) => {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     postData: data,
   };
@@ -54,6 +59,9 @@ export const deleteRec = async (data) => {
   const reqObj = {
     path: `/patient/delete/${data}`,
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
   };
   return invokeApi(reqObj);
 };

@@ -4,10 +4,11 @@ import { deleteRec, getPatientList } from "../../API/patients";
 import Message from "../../components/Message";
 import Pagination from "../../components/Pagination";
 
-const PatientList = () => {
+const AppointmentList = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
+  const [selectedOPD, setSelectedOPD] = useState("today");
 
   // get user
   const getPatient = async ({ page, limit }) => {
@@ -45,6 +46,11 @@ const PatientList = () => {
     setSearch(value);
     getPatient();
   };
+  // handle click on tab
+  const handleClick = (value) => {
+    setSelectedOPD(value);
+    console.log("Selected:", value);
+  };
 
   // search
   useEffect(() => {
@@ -66,8 +72,35 @@ const PatientList = () => {
 
         <div className="card shadow-sm">
           <div className="card-body">
-            <div className="mb-4 d-flex justify-content-end float-end" style={{ width: "300px" }}>
-              <input type="search" className="form-control" value={search} onChange={handleSearch} placeholder="Search" />
+            <div className="d-flex justify-content-between align-items-center ">
+
+
+              <div className="d-flex gap-3 align-items-center">
+                {["today", "coming", "old"].map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => handleClick(item)}
+                    className="btn btn-link px-3"
+                    style={{
+                      textDecoration: "none",
+                      fontSize: "20px",
+                      color: selectedOPD === item ? "#000" : "#555",
+                      borderBottom: selectedOPD === item ? "2px solid #000" : "2px solid transparent",
+                      borderRadius: 0,
+                    }}
+                  >
+                    {item === "today"
+                      ? "Today OPD"
+                      : item === "coming"
+                        ? "Coming OPD"
+                        : "Old OPD"}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mb-4 d-flex justify-content-end float-end align-items-center" style={{ width: "300px" }}>
+                <input type="search" className="form-control" value={search} onChange={handleSearch} placeholder="Search" />
+              </div>
             </div>
 
             {/* Table */}
@@ -114,15 +147,15 @@ const PatientList = () => {
                           minute: "2-digit",
                           second: "2-digit",
                           hour12: true,
-                        })}
+                        })}PatientList
                       </td>
                       <td>
                         {user.isDead ? (
                           <button
                             className="btn btn-sm"
-                            style={{ background: '#ccc', color: '#666',  }}
+                            style={{ background: '#ccc', color: '#666', }}
                             disabled
-                           
+
                           >
                             Edit
                           </button>
@@ -164,4 +197,4 @@ const PatientList = () => {
   );
 };
 
-export default PatientList;
+export default AppointmentList;
