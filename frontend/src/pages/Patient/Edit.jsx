@@ -9,7 +9,8 @@ function AddPatient() {
   const [validated, setValidated] = useState(false);
   const [message, setMessage] = useState("");
   const [variant, setVariant] = useState("success");
-  const [data, setData] = useState({}); 
+  const [data, setData] = useState({});
+  const [originalData, setOriginalData] = useState({});
   const [file, setFile] = useState(null);
 
   useEffect(() => {
@@ -20,10 +21,18 @@ function AddPatient() {
     try {
       const response = await getOneRec(id);
       setData(response?.data?.data || {});
+      setOriginalData(response?.data?.data || {});
     } catch (error) {
       console.error("Error fetching user:", error);
     }
   };
+
+  // shallow comparison 
+  const isEqual = (obj1, obj2) => {
+    return JSON.stringify(obj1) === JSON.stringify(obj2);
+  }
+
+
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -33,6 +42,7 @@ function AddPatient() {
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
+
 
   // handle submit
   const handleSubmit = async (event) => {
@@ -45,6 +55,13 @@ function AddPatient() {
         return;
       }
 
+      // handle if no change
+      if (isEqual(data, originalData)) {
+        setMessage("You have not made any changes");
+        setVariant("warning");  
+        return
+      }
+
       const payload = new FormData();
       payload.append("name", data.name || "");
       payload.append("fatherName", data.fatherName || "");
@@ -54,6 +71,7 @@ function AddPatient() {
       payload.append("martialStatus", data.martialStatus || "");
       payload.append("dob", data.dob || "");
       payload.append("address", data.address || "");
+      payload.append("isDead", data.isDead || "");
       if (file) {
         payload.append("file", file);
       }
@@ -217,6 +235,29 @@ function AddPatient() {
             </select>
             <div className="invalid-feedback">Marital Status is required</div>
           </div>
+          <div className="form-group col-lg-6">
+            <label htmlFor="inputMaritalStatus">Is Dead</label>
+            <select
+              name="isDead"
+              id="inputMaritalStatus"
+              className="form-control"
+              value={data.isDead === true ? "yes" : data.isDead === false ? "no" : ""}
+              onChange={(e) =>
+                handleOnChange({
+                  target: {
+                    name: "isDead",
+                    value: e.target.value === "yes", // "yes" => true, "no" => false
+                  },
+                })
+              }
+              required
+            >
+              <option value="" disabled>Select Status</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+
         </div>
 
         {/* Address */}
@@ -233,7 +274,7 @@ function AddPatient() {
           </div>
         </div>
 
-      
+
         {/* Submit */}
         <div>
           <button

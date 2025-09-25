@@ -80,6 +80,7 @@ const PatientList = () => {
                   <th>Gender</th>
                   <th>Blood Group</th>
                   <th>Phone</th>
+                  <th>Dead</th>
                   <th>Pic</th>
                   <th>Created At</th>
                   <th>Action</th>
@@ -95,10 +96,11 @@ const PatientList = () => {
                       <td>{user.gender || "N/A"}</td>
                       <td>{user.bloodGroup || "N/A"}</td>
                       <td>{user.phone || "N/A"}</td>
+                      <td>{user.isDead === true ? "Yes" : user.isDead === false ? "No" : "N/A"}</td>
                       <td > 
                          <img style={{
-                        width: '120px',
-                        height: '120px',
+                        width: '100px',
+                        height: '100px',
                         objectFit: 'cover',
                         borderRadius: '50%'
                       }} src={user.pic} alt="" /> 
