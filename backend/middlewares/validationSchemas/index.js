@@ -1,3 +1,4 @@
-module.export = {
-    user: require('./user')
+module.exports = {
+    user: require('./user'),
+    patient: require('./patient'),
 }

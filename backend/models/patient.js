@@ -17,7 +17,12 @@ class Patient extends BaseModel {
         ),
         martialStatus: DataTypes.ENUM("married", "single"),
         pic: DataTypes.STRING,
-        address: DataTypes.STRING,
+        address: DataTypes.STRING, 
+        isDead: {
+          type:  DataTypes.BOOLEAN,
+          defaultValue: false
+        }
+       ,
       },
       {
         modelName: "Patient", 

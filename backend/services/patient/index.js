@@ -4,7 +4,7 @@ const { Patient } = require("../../models");
 const { success, error } = require("../../utils/response");
 const { handleFileUpload } = require("../../utils/fileUpload"); 
 const { faker } = require('@faker-js/faker');
-
+const { Op } = require("sequelize");
 const create = asyncErrorHandler(async (req, res) => {
   try {
     const { phone } = req.body;
@@ -90,13 +90,11 @@ const get = asyncErrorHandler(async (req, res) => {
    whereCondition = {
      [Op.or] : [
       { name: { [Op.iLike]: `%${search}%` } },
-      { email: { [Op.iLike]: `%${search}%` } },
       { phone: { [Op.iLike]: `%${search}%` } },
      ]
 
    }
      
-   {email:search}
   }
 
   const { count, rows } = await Patient.findAndCountAll({

@@ -7,7 +7,7 @@ const { validateParams } = require("../../middlewares/paramsValidate");
 const { upload } = require("../../utils/multer");
 
 
-router.post("/add", upload.single("file"),  patientService.create);
+router.post("/add", upload.single("file"), validate(validationSchemas.patient),  patientService.create);
 
 router.get("/get", patientService.get);
 router.get("/get/:id", patientService.getOne)
