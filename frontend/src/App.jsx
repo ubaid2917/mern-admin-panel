@@ -14,11 +14,11 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(token){
+    if(token && token.trim() !== "" && token !== "undefined"){
       localStorage.setItem("token", token);
     }else{
       localStorage.removeItem("token");
-      navigate("/auth/login")
+      navigate("/auth/login", { replace: true })
     }
   }, [token])   
 
