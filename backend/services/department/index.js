@@ -1,35 +1,24 @@
 const asyncErrorHandler = require("../../utils/asyncErrorHandler");
 const { TEXTS, STATUS_CODES } = require("../../config/constants");
-const { Patient } = require("../../models");
+const { Department } = require("../../models");
 const { success, error } = require("../../utils/response");
-const { handleFileUpload } = require("../../utils/fileUpload"); 
 const { faker } = require('@faker-js/faker');
 const { Op } = require("sequelize");
+
 const create = asyncErrorHandler(async (req, res) => {
   try {
-    const { phone } = req.body;
+    const { name } = req.body;
 
-    // Check phone already exist
-    const isExistPhone = await Patient.findOne({ where: { phone } });
+    // Check department already exist
+    const isExistPhone = await Department.findOne({ where: { name } });
     if (isExistPhone) {
-      return error(res, "Phone already exist");
+      return error(res, "Department already exist");
     }
 
-    // Upload file if exists
-    if (req.file) {
-      const uploaded = await handleFileUpload(req.file, "patient");
-
-      if (!uploaded.success) {
-        return error(res, uploaded.message);
-      }
-
-      req.body.pic = uploaded.fileUrl;
-    }
-
-    const data = await Patient.create(req.body);
+    const data = await Department.create(req.body);
     return success(res, TEXTS.CREATED, data, 201);
   } catch (err) {
-    return error(res, "Failed to create patient", [err.message], 500);
+    return error(res, "Failed to create record", [err.message], 500);
   }
 });
 
@@ -57,12 +46,12 @@ const seed = async () => {
     console.error("❌ Failed to create patients:", err.message);
   }
 };
- 
+
 
 const update = asyncErrorHandler(async (req, res) => {
   const { id } = req.params;
 
-  const [status, updatedData] = await Patient.update(
+  const [status, updatedData] = await Department.update(
     { ...req.body },
     {
       where: { id },
@@ -77,29 +66,27 @@ const update = asyncErrorHandler(async (req, res) => {
   return success(res, TEXTS.UPDATED, updatedData, 200);
 });
 
-const get = asyncErrorHandler(async (req, res) => {    
+const get = asyncErrorHandler(async (req, res) => {
 
-//  await seed()
-          
-  const {search} = req.query;  
+  //  await seed()
+
+  const { search } = req.query;
 
   let whereCondition = {};
-   
-  // just search on email
-  if(search){
-   whereCondition = {
-     [Op.or] : [
-      { name: { [Op.iLike]: `%${search}%` } },
-      { phone: { [Op.iLike]: `%${search}%` } },
-     ]
 
-   }
-     
+  if (search) {
+    whereCondition = {
+      [Op.or]: [
+        { name: { [Op.iLike]: `%${search}%` } },
+      ]
+
+    }
+
   }
 
-  const { count, rows } = await Patient.findAndCountAll({
+  const { count, rows } = await Department.findAndCountAll({
     order: [["created", "DESC"]],
-    ...req.pagination, 
+    ...req.pagination,
     where: whereCondition
   });
 
@@ -115,7 +102,7 @@ const get = asyncErrorHandler(async (req, res) => {
 });
 const getOne = asyncErrorHandler(async (req, res) => {
   const { id } = req.params;
-  const data = await Patient.findOne({
+  const data = await Department.findOne({
     where: { id },
   });
 
@@ -123,7 +110,7 @@ const getOne = asyncErrorHandler(async (req, res) => {
 });
 
 const del = asyncErrorHandler(async (req, res) => {
-  const data = await Patient.findOne({
+  const data = await Department.findOne({
     where: { id: req.params?.id },
   });
 
@@ -131,7 +118,7 @@ const del = asyncErrorHandler(async (req, res) => {
     return error(res, TEXTS.NOT_FOUND);
   }
 
-  await Patient.destroy({
+  await Department.destroy({
     where: { id: req.params?.id },
   });
 
