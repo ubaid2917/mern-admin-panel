@@ -1,8 +1,8 @@
 'use strict';
 const BaseModel = require('./baseModel');
-
+const { DataTypes } = require("sequelize");
 class Department extends BaseModel {
-  static initModel(sequelize, DataTypes) {
+  static initModel(sequelize) {
     return super.initBase(
       sequelize,
       {
