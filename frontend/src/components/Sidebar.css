@@ -1,0 +1,9 @@
+.dropdown-menu .dropdown-item.link {
+  background-color: transparent !important;
+  color: white !important;
+}
+
+.dropdown-menu .dropdown-item.link:hover {
+  background-color: rgba(250, 235, 215, 0.363) !important;
+  color: black !important;
+}

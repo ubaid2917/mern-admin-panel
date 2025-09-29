@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate, } from "react-router";
-import Dropdown from 'react-bootstrap/Dropdown';
+import Dropdown from 'react-bootstrap/Dropdown'; 
+// import './Sidebar.css'
 
 
 function Sidebar({ setToken }) {
@@ -10,13 +11,14 @@ function Sidebar({ setToken }) {
     localStorage.removeItem("token");
     setToken(null)
     navigate("/auth/login");
-  }  
+  }
 
-   const dropdownStyle = (extra = {}) => ({
+  const dropdownStyle = (extra = {}) => ({
     backgroundColor: "transparent",
     border: "none",
     color: "white",
-    ...extra, 
+     
+    ...extra,
   });
 
 
@@ -43,23 +45,24 @@ function Sidebar({ setToken }) {
           Category
         </Link>
 
-        <Dropdown>
+        <Dropdown autoClose="outside">
           <Dropdown.Toggle style={dropdownStyle()} className="link" id="dropdown-basic">
             Doctor Details
           </Dropdown.Toggle>
 
           <Dropdown.Menu style={dropdownStyle()} className="link">
-            <Dropdown.Item style={dropdownStyle()} to={'/departments/list'} className="link">
-             Department List
+            <Dropdown.Item as={Link} to="/departments/list"  style={dropdownStyle()} >
+              Department List
             </Dropdown.Item>
-            <Dropdown.Item style={dropdownStyle()}  to={'/departments/list'} className="link">
+            <Dropdown.Item as={Link} to="/doctors/list"  style={dropdownStyle()}>
               Doctor List
             </Dropdown.Item>
-            <Dropdown.Item style={dropdownStyle()}  to={'/departments/list'} className="link">
+            <Dropdown.Item as={Link} to="/something" style={dropdownStyle()}>
               Something else
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+
 
 
 
