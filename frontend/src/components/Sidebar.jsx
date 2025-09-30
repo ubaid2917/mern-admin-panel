@@ -52,10 +52,10 @@ function Sidebar({ setToken }) {
 
           <Dropdown.Menu style={dropdownStyle()} className="link">
             <Dropdown.Item as={Link} to="/departments/list"  style={dropdownStyle()} >
-              Department List
+              Departments
             </Dropdown.Item>
             <Dropdown.Item as={Link} to="/doctors/list"  style={dropdownStyle()}>
-              Doctor List
+              Doctors
             </Dropdown.Item>
             <Dropdown.Item as={Link} to="/something" style={dropdownStyle()}>
               Something else
