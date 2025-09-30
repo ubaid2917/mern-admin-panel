@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import Message from "../../components/Message";
 import App from "../../App";
 import { addUser } from "../../../src/API/user";
+import { useToast } from "../../components/ToastProvider";
 function AddUser() {
   const navigate = useNavigate();
   const [validated, setValidated] = useState(false);
@@ -18,11 +19,13 @@ function AddUser() {
     zip: "",
   });
 
+  const { showToast } = useToast();
+
   const handleOnChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
- 
+
   // handle submit
   const handleSubmit = async (event) => {
     try {
@@ -30,15 +33,21 @@ function AddUser() {
       const form = event.target;
 
       if (form.checkValidity() === false) {
-      } else {  
-         const response = await addUser(formData); 
-        setMessage("Record Created Successfully");
-        navigate("/users/list");
+      } else {
+        const response = await addUser(formData); 
+
+        if (response?.data?.success === true) {
+          showToast(response?.data?.message, "success");
+          navigate("/users/list");
+        }else {
+          showToast(response?.message || response?.data?.message,  "error");
+        }
+
       }
 
       setValidated(true);
     } catch (error) {
-        alert('Something went wrong')
+      showToast("Something Went Wrong",  "error");
     }
   };
 
@@ -48,9 +57,8 @@ function AddUser() {
       <div className="d-flex justify-content-center">
         <form
           noValidate
-          className={`needs-validation card p-4 ${
-            validated ? "was-validated" : ""
-          }`}
+          className={`needs-validation card p-4 ${validated ? "was-validated" : ""
+            }`}
           style={{ width: "1000px" }}
           onSubmit={handleSubmit}
         >
@@ -119,7 +127,7 @@ function AddUser() {
           </div>
 
           <div className="row mb-3">
-             <div className="form-group col-md-4">
+            <div className="form-group col-md-4">
               <label htmlFor="inputState">Province</label>
               <select
                 id="inputState"
@@ -150,7 +158,7 @@ function AddUser() {
               />
               <div className="invalid-feedback">City is required</div>
             </div>
-           
+
             <div className="form-group col-md-2">
               <label htmlFor="inputZip">Zip</label>
               <input

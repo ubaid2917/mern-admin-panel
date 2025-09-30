@@ -3,23 +3,23 @@ import { Link } from "react-router";
 import { deleteRec, getDepartmentList } from "../../API/Department";
 import Message from "../../components/Message";
 import Pagination from "../../components/Pagination";
+import { useToast } from "../../components/ToastProvider";
 
 const DepartmentList = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
+  const { showToast } = useToast();
 
   // get user
   const getDepartment = async ({ page, limit }) => {
     try {
       const response = await getDepartmentList(search, limit, page);
-
-      console.log('response', response)
       if (response.status !== 200) return;
       setData(response?.data?.data);
 
     } catch (error) {
-      alert("Something went wrong");
+       showToast("Something Went Wrong",  "error");
     }
   };
 
@@ -30,12 +30,12 @@ const DepartmentList = () => {
       if (confirmDelete) {
         const response = await deleteRec(id);
         if (response.data.success !== false) {
-          setMessage("Record Deleted Successfully");
+          showToast(response?.data?.message, "success");
           getDepartment({ page: 1, limit: 10 });
         }
       }
     } catch (error) {
-      alert("Something went wrong")
+       showToast("Something Went Wrong",  "error");
     }
   };
 

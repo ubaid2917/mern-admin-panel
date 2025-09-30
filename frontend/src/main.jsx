@@ -5,13 +5,16 @@ import App from './App.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import { BrowserRouter } from 'react-router';
 import Message from './components/Message.jsx';
+import { ToastProvider } from './components/ToastProvider.jsx';
 
 
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
   <StrictMode>
+    <ToastProvider>
     <App />
+    </ToastProvider>
   </StrictMode>,
   </BrowserRouter>
 

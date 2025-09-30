@@ -5,6 +5,7 @@ import App from "../../App";
 
 function EditUser() {
   const navigate = useNavigate();
+  
   const [validated, setValidated] = useState(false);
   const [message, setMessage] = useState(false);
   const [formData, setFormData] = useState({
@@ -20,8 +21,6 @@ function EditUser() {
   const handleOnChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
-    console.log("event", value);
-    console.log("event name", name);
   };
 
   const handleSubmit = (event) => {

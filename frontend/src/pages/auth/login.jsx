@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import Message from "../../components/Message";
 import { loginUser } from "../../API/auth";
+import { useToast } from "../../components/ToastProvider";
 
 function Login({ setToken }) {
   const navigate = useNavigate();
@@ -12,6 +13,9 @@ function Login({ setToken }) {
     email: "",
     password: "",
   });
+  const {showToast} = useToast();  
+
+
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -34,7 +38,8 @@ function Login({ setToken }) {
         }
         localStorage.setItem("token", response?.data?.token);
         setToken(response?.data?.token);
-        setMessage("Login Successfully");
+        showToast("Login Successfully", "success");
+        // setMessage("Login Successfully");
 
         navigate("/dashboard");
       } catch (error) {

@@ -3,8 +3,11 @@ import { useNavigate } from "react-router";
 import Message from "../../components/Message";
 import App from "../../App";
 import { addDepartment } from "../../../src/API/Department";
+import { useToast } from "../../components/ToastProvider";
 function AddDepartment() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
+
   const [validated, setValidated] = useState(false);
   const [message, setMessage] = useState("");
   const [variant, setVariant] = useState("success");
@@ -37,30 +40,18 @@ function AddDepartment() {
 
       payload.append("name", formData.name);
       payload.append("description", formData.description);
-      
 
       const response = await addDepartment(payload);
 
-      console.log("response", response);
+      if (response?.data?.success === true) {
+        showToast(response?.data?.message, "success");
 
-      if (response.success === false) {
-        setMessage(response.message || "Failed to add patient");
-        setVariant("danger");
-      } else if (response?.data?.success === false) {
-        setMessage(response?.data?.message);
-        setVariant("danger");
+        navigate("/departments/list");
       } else {
-        setMessage(response?.data?.message || "Department added successfully");
-        setVariant("success");
-
-        setTimeout(() => {
-          navigate("/departments/list");
-        }, 2000);
+        showToast(response?.message || response?.data?.message, "error");
       }
     } catch (error) {
-      console.error(error);
-      setMessage("Something went wrong");
-      setVariant("danger");
+      showToast("Something Went Wrong", "error");
     }
   };
 
@@ -69,12 +60,10 @@ function AddDepartment() {
       <div className="d-flex justify-content-center">
         <form
           noValidate
-          className={`needs-validation card p-4 ${
-            validated ? "was-validated" : ""
-          }`}
+          className={`needs-validation card p-4 ${validated ? "was-validated" : ""
+            }`}
           style={{ width: "1000px" }}
           onSubmit={handleSubmit}
-         
         >
           <h3 className="mb-4">Add Department</h3>
           {message && (
@@ -105,13 +94,9 @@ function AddDepartment() {
                 name="description"
                 value={formData.description}
                 onChange={handleOnChange}
-                
               />
-            
             </div>
           </div>
-
-         
 
           <div>
             <button
