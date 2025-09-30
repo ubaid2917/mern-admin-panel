@@ -36,7 +36,7 @@ const seed = asyncErrorHandler(async (req, res) => {
      const users = [];
 
     for (let i = 0; i < 200; i++) {
-      const hashedPassword = await bcrypt.hash("123456", 10); // default password for all
+      const hashedPassword = await bcrypt.hash("12345678", 10); // default password for all
 
       users.push({
         name: faker.person.fullName(),
@@ -73,7 +73,7 @@ const update = asyncErrorHandler(async (req, res) => {
 
   if (!status) {
     return error(res, "data not found");
-  }users
+  }
 
   return success(res, TEXTS.UPDATED, updatedData, 200);
 });
@@ -81,7 +81,7 @@ const update = asyncErrorHandler(async (req, res) => {
 const get = asyncErrorHandler(async (req, res) => {  
 
   const {search} = req.query;  
-  // seed()
+  seed()
 
   let whereCondition = {};
    

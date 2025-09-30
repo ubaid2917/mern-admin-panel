@@ -40,6 +40,19 @@ class Doctor extends BaseModel {
         appointmentCharges: {
           type: DataTypes.INTEGER,
         },
+        departmentId: {
+          type: DataTypes.UUID,
+          allowNull:false,
+        },
+        isLive: {
+          type: DataTypes.BOOLEAN,
+          allowNull:true,
+          defaultValue: false
+        },
+        liveUrl: {
+          type: DataTypes.STRING,
+          allowNull: true
+        }
       },
       {
         modelName: 'Doctor',
