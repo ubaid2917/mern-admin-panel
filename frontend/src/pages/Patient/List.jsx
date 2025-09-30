@@ -3,23 +3,27 @@ import { Link } from "react-router";
 import { deleteRec, getPatientList } from "../../API/patients";
 import Message from "../../components/Message";
 import Pagination from "../../components/Pagination";
+import { useToast } from "../../components/ToastProvider";
+
+
+
 
 const PatientList = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
+   const { showToast } = useToast();
 
   // get user
   const getPatient = async ({ page, limit }) => {
     try {
       const response = await getPatientList(search, limit, page);
 
-      console.log('response', response)
       if (response.status !== 200) return;
       setData(response?.data?.data);
 
     } catch (error) {
-      alert("Something went wrong");
+     showToast("Something Went Wrong",  "error");
     }
   };
 
@@ -30,12 +34,12 @@ const PatientList = () => {
       if (confirmDelete) {
         const response = await deleteRec(id);
         if (response.data.success !== false) {
-          setMessage("Record Deleted Successfully");
+          showToast(response?.data?.message, "success");
           getPatient({ page: 1, limit: 10 });
         }
       }
     } catch (error) {
-      alert("Something went wrong")
+       showToast("Something Went Wrong",  "error");
     }
   };
 

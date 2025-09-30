@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import Message from "../../components/Message";
 import App from "../../App";
-import { addPatient } from "../../../src/API/patients";
+import { addPatient } from "../../../src/API/patients";  
+
+import { useToast } from "../../components/ToastProvider";
 function AddPatient() {
   const navigate = useNavigate();
   const [validated, setValidated] = useState(false);
@@ -19,7 +21,8 @@ function AddPatient() {
     dob: "",
     file: "",
     address: "",
-  });
+  }); 
+  const { showToast } = useToast();
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -55,24 +58,15 @@ function AddPatient() {
 
       console.log("response", response);
 
-      if (response.success === false) {
-        setMessage(response.message || "Failed to add patient");
-        setVariant("danger");
-      } else if (response?.data?.success === false) {
-        setMessage(response?.data?.message);
-        setVariant("danger");
+      if (response?.data?.success === true) {
+       showToast(response?.data?.message, "success");
+       navigate("/patients/list");
       } else {
-        setMessage(response?.data?.message || "Patient added successfully");
-        setVariant("success");
-
-        setTimeout(() => {
-          navigate("/patients/list");
-        }, 2000);
+       showToast(response?.message || response?.data?.message,  "error");
       }
     } catch (error) {
       console.error(error);
-      setMessage("Something went wrong");
-      setVariant("danger");
+      showToast("Something Went Wrong",  "error");
     }
   };
 

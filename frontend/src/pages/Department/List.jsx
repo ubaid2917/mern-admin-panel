@@ -4,12 +4,13 @@ import { deleteRec, getDepartmentList } from "../../API/Department";
 import Message from "../../components/Message";
 import Pagination from "../../components/Pagination";
 import { useToast } from "../../components/ToastProvider";
-
+import DeleteModel from "../../components/DeleteModel";
 const DepartmentList = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
   const { showToast } = useToast();
+  const [deleteId, setDeleteId] = useState(null);
 
   // get user
   const getDepartment = async ({ page, limit }) => {
@@ -19,23 +20,22 @@ const DepartmentList = () => {
       setData(response?.data?.data);
 
     } catch (error) {
-       showToast("Something Went Wrong",  "error");
+      showToast("Something Went Wrong", "error");
     }
   };
 
   // handle delete
   const handleDeleteUser = async (id) => {
     try {
-      const confirmDelete = window.confirm("Are you sure you want to delete this data?");
-      if (confirmDelete) {
-        const response = await deleteRec(id);
-        if (response.data.success !== false) {
-          showToast(response?.data?.message, "success");
-          getDepartment({ page: 1, limit: 10 });
-        }
+
+      const response = await deleteRec(id);
+      if (response.data.success !== false) {
+        showToast(response?.data?.message, "success");
+        getDepartment({ page: 1, limit: 10 });
       }
+
     } catch (error) {
-       showToast("Something Went Wrong",  "error");
+      showToast("Something Went Wrong", "error");
     }
   };
 
@@ -53,7 +53,8 @@ const DepartmentList = () => {
 
   return (
     <>
-      <Message message={message} />
+
+
       <div className="mt-1">
         <div className="d-flex justify-content-between">
           <div>
@@ -77,7 +78,7 @@ const DepartmentList = () => {
                   <th>#</th>
                   <th>Name</th>
                   <th>Description</th>
-                 
+
                   <th>Created At</th>
                   <th>Action</th>
                 </tr>
@@ -89,7 +90,7 @@ const DepartmentList = () => {
                       <td >{index + 1}</td>
                       <td>{data.name || "N/A"}</td>
                       <td>{data.description || "N/A"}</td>
-                     
+
                       <td>
                         {new Date(data.created).toLocaleString("en-US", {
                           day: "2-digit",
@@ -105,15 +106,15 @@ const DepartmentList = () => {
                         {data.isDead ? (
                           <button
                             className="btn btn-sm"
-                            style={{ background: '#ccc', color: '#666',  }}
+                            style={{ background: '#ccc', color: '#666', }}
                             disabled
-                           
+
                           >
                             Edit
                           </button>
                         ) : (
                           <Link
-                            to={`/patients/edit/${data.id}`}
+                            to={`/departments/edit/${data.id}`}
                             className="btn btn-sm"
                             style={{ background: '#212529', color: '#fff' }}
                           >
@@ -122,11 +123,15 @@ const DepartmentList = () => {
                         )}
 
                         <button
-                          onClick={() => handleDeleteUser(data.id)}
+                          type="button"
+                          onClick={() => setDeleteId(data.id)}
                           className="btn btn-sm btn-danger ms-2"
+                          data-bs-toggle="modal"
+                          data-bs-target="#deleteModal"
                         >
                           Delete
                         </button>
+
                       </td>
                     </tr>
                   ))
@@ -145,6 +150,7 @@ const DepartmentList = () => {
           </div>
         </div>
       </div>
+      <DeleteModel deleteId={deleteId} handleDelete={handleDeleteUser} />
     </>
   );
 };

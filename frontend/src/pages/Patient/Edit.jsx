@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { getOneRec, updateOneRec } from "../../../src/API/patients";
+import { useToast } from "../../components/ToastProvider";
 
 function AddPatient() {
   const navigate = useNavigate();
+  var { showToast } = useToast();
   const { id } = useParams();
 
   const [validated, setValidated] = useState(false);
@@ -23,7 +25,7 @@ function AddPatient() {
       setData(response?.data?.data || {});
       setOriginalData(response?.data?.data || {});
     } catch (error) {
-      console.error("Error fetching user:", error);
+      showToast("Something Went Wrong",  "error");
     }
   };
 
@@ -78,21 +80,15 @@ function AddPatient() {
 
       const response = await updateOneRec(id, payload);
 
-      if (response?.data?.success === false) {
-        setMessage(response?.data?.message || "Failed to update patient");
-        setVariant("danger");
+      if (response?.data?.success === true) {
+        showToast(response?.data?.message, "success");
+        navigate("/patients/list");
       } else {
-        setMessage(response?.data?.message || "Patient updated successfully");
-        setVariant("success");
-
-        setTimeout(() => {
-          navigate("/patients/list");
-        }, 2000);
+        showToast(response?.message || response?.data?.message,  "error");
       }
     } catch (error) {
       console.error(error);
-      setMessage("Something went wrong");
-      setVariant("danger");
+      showToast("Something Went Wrong",  "error");
     }
   };
 
