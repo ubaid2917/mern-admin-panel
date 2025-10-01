@@ -1,10 +1,11 @@
 const asyncErrorHandler = require("../../utils/asyncErrorHandler");
 const { TEXTS, STATUS_CODES } = require("../../config/constants");
-const { Doctor } = require("../../models");
+const { Doctor , Department} = require("../../models");
 const { success, error } = require("../../utils/response");
-const { faker } = require('@faker-js/faker');
+const { faker } = require("@faker-js/faker");
 const { Op } = require("sequelize");
-const bcrypt = require('bcrypt'); 
+const bcrypt = require("bcrypt");
+const { createZoomMeeting } = require("../../utils/zoomService");
 
 const create = asyncErrorHandler(async (req, res) => {
   try {
@@ -14,18 +15,14 @@ const create = asyncErrorHandler(async (req, res) => {
     const isExist = await Doctor.findOne({ where: { email } });
     if (isExist) {
       return error(res, "Email already exist");
-    }     
-    
-    if(isExist?.phone === phone){
+    }
+
+    if (isExist?.phone === phone) {
       return error(res, "Phone already exist");
     }
-     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    
-     req.body.password = hashedPassword  
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-     if(isLive === true){
-      
-     }
+    req.body.password = hashedPassword;
 
     const data = await Doctor.create(req.body);
     return success(res, TEXTS.CREATED, data, 201);
@@ -43,10 +40,19 @@ const seed = async () => {
         name: faker.person.fullName(),
         fatherName: faker.person.firstName(), // no fatherName in faker.internet
         phone: faker.phone.number("03#########"),
-        gender: faker.helpers.arrayElement(['male', 'female']),
-        dob: faker.date.birthdate({ min: 18, max: 80, mode: 'age' }),
-        bloodGroup: faker.helpers.arrayElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
-        martialStatus: faker.helpers.arrayElement(['married', 'single']),
+        gender: faker.helpers.arrayElement(["male", "female"]),
+        dob: faker.date.birthdate({ min: 18, max: 80, mode: "age" }),
+        bloodGroup: faker.helpers.arrayElement([
+          "A+",
+          "A-",
+          "B+",
+          "B-",
+          "AB+",
+          "AB-",
+          "O+",
+          "O-",
+        ]),
+        martialStatus: faker.helpers.arrayElement(["married", "single"]),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -58,7 +64,6 @@ const seed = async () => {
     console.error("❌ Failed to create patients:", err.message);
   }
 };
-
 
 const update = asyncErrorHandler(async (req, res) => {
   const { id } = req.params;
@@ -79,9 +84,6 @@ const update = asyncErrorHandler(async (req, res) => {
 });
 
 const get = asyncErrorHandler(async (req, res) => {
-
-  //  await seed()
-
   const { search } = req.query;
 
   let whereCondition = {};
@@ -90,16 +92,22 @@ const get = asyncErrorHandler(async (req, res) => {
     whereCondition = {
       [Op.or]: [
         { name: { [Op.iLike]: `%${search}%` } },
-      ]
-
-    }
-
+        { email: { [Op.iLike]: `%${search}%` } },
+      ],
+    };
   }
-
   const { count, rows } = await Doctor.findAndCountAll({
+    attributes: {exclude: ['password', 'deleted', 'departmentId']},
+    include: [
+      {
+        model: Department,
+        as: "department",
+        attributes: ["name"]
+      }
+    ],
     order: [["created", "DESC"]],
     ...req.pagination,
-    where: whereCondition
+    where: whereCondition,
   });
 
   res.status(STATUS_CODES.SUCCESS).json({
@@ -112,10 +120,19 @@ const get = asyncErrorHandler(async (req, res) => {
     pageCount: Math.ceil(count / req.pagination.limit),
   });
 });
+
 const getOne = asyncErrorHandler(async (req, res) => {
   const { id } = req.params;
   const data = await Doctor.findOne({
     where: { id },
+    attributes: {exclude: ['password', 'deleted', 'departmentId']},
+    include: [
+      {
+        model: Department,
+        as: "department",
+        attributes: ["name"]
+      }
+    ],
   });
 
   return success(res, "Data Found", data, 200);
@@ -123,6 +140,7 @@ const getOne = asyncErrorHandler(async (req, res) => {
 
 const del = asyncErrorHandler(async (req, res) => {
   const data = await Doctor.findOne({
+    
     where: { id: req.params?.id },
   });
 

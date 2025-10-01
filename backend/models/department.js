@@ -11,7 +11,13 @@ class Department extends BaseModel {
       },
       {
         modelName: 'Department',
-        tableName: 'departments'
+        tableName: 'departments',
+        paranoid: true, 
+        defaultScope: {
+          where: {
+            deleted: null,
+          },
+        },
       }
     );
   }

@@ -25,6 +25,11 @@ class User extends BaseModel {
       {
         modelName: "User",  
         tableName: "user",  
+        defaultScope: {
+          where: {
+            deleted: null,
+          },
+        },
       }
     );
   }

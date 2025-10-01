@@ -27,6 +27,12 @@ class Patient extends BaseModel {
       {
         modelName: "Patient", 
         tableName: "patients",  
+        paranoid: true, 
+        defaultScope: {
+          where: {
+            deleted: null,
+          },
+        },
       }
     );
   }

@@ -44,27 +44,25 @@ class Doctor extends BaseModel {
           type: DataTypes.UUID,
           allowNull:false,
         },
-        isLive: {
-          type: DataTypes.BOOLEAN,
-          allowNull:true,
-          defaultValue: false
-        },
-        liveUrl: {
-          type: DataTypes.STRING,
-          allowNull: true
-        }
+       
       },
       {
         modelName: 'Doctor',
         tableName: 'doctors',
         freezeTableName: true,
-         paranoid: true, 
+        paranoid: true, 
+        defaultScope: {
+          where: {
+            deleted: null,
+          },
+        },
       }
     );
   }
 
   static associate(models) {
     // define association here
+    Doctor.belongsTo(models.Department, { foreignKey: 'departmentId' , as: 'department' });
   }
 }
 
