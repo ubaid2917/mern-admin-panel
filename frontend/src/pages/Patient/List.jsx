@@ -3,7 +3,8 @@ import { Link } from "react-router";
 import { deleteRec, getPatientList } from "../../API/patients";
 import Message from "../../components/Message";
 import Pagination from "../../components/Pagination";
-import { useToast } from "../../components/ToastProvider";
+import { useToast } from "../../components/ToastProvider"; 
+import SkeletonTable from "../../components/skeletonTable";
 
 
 
@@ -13,10 +14,12 @@ const PatientList = () => {
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
    const { showToast } = useToast();
+   const [loading, setLoading] = useState(false);
 
   // get user
   const getPatient = async ({ page, limit }) => {
-    try {
+    try { 
+      setLoading(true)
       const response = await getPatientList(search, limit, page);
 
       if (response.status !== 200) return;
@@ -24,6 +27,8 @@ const PatientList = () => {
 
     } catch (error) {
      showToast("Something Went Wrong",  "error");
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -90,6 +95,9 @@ const PatientList = () => {
                   <th>Action</th>
                 </tr>
               </thead>
+               {loading ? (
+                <SkeletonTable rows={6} />
+              ) : (
               <tbody>
                 {data?.length > 0 ? (
                   data.map((user, index) => (
@@ -157,6 +165,7 @@ const PatientList = () => {
                   </tr>
                 )}
               </tbody>
+              )}
             </table>
 
             {/* ✅ Pagination child */}

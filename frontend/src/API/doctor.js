@@ -1,10 +1,10 @@
 import { invokeApi } from "../utils/invokeApi";
 
 // get user
-export const getDepartmentList = async (search, limit, page) => {
+export const getList = async (search, limit, page) => {
   //  console.log('search')
   const reqObj = {
-    path: `/department/get?search=${search || ""}&limit=${limit}&page=${page}`,
+    path: `/doctor/get?search=${search}&limit=${limit}&page=${page}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -14,9 +14,9 @@ export const getDepartmentList = async (search, limit, page) => {
 };
 
 // add record
-export const addDepartment = async (data) => {
+export const addRecord = async (data) => {
   const reqObj = {
-    path: `/department/add`,
+    path: `/doctor/add`,
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -29,7 +29,7 @@ export const addDepartment = async (data) => {
 // get single record
 export const getOneRec = async (id) => {
   const reqObj = {
-    path: `/department/get/${id}`,
+    path: `/doctor/get/${id}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -42,7 +42,7 @@ export const getOneRec = async (id) => {
 export const updateOneRec = async (id, data) => {
   console.log("id", id);
   const reqObj = {
-    path: `/department/update/${id}`,
+    path: `/doctor/update/${id}`,
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export const updateOneRec = async (id, data) => {
 // delete record
 export const deleteRec = async (data) => {
   const reqObj = {
-    path: `/department/delete/${data}`,
+    path: `/doctor/delete/${data}`,
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,

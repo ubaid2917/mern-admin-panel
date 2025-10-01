@@ -1,31 +1,55 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
-import { getOneRec, updateOneRec } from "../../API/Department";
+import { getOneRec, updateOneRec } from "../../API/doctor";
 import { useToast } from "../../components/ToastProvider";
+import { getDepartmentList } from "../../../src/API/Department";
 
-function EditDepartment() {
+function EditDoctor() {
   const navigate = useNavigate();
   const { id } = useParams();
-   const { showToast } = useToast();
+  const { showToast } = useToast();
 
   const [validated, setValidated] = useState(false);
   const [message, setMessage] = useState("");
   const [variant, setVariant] = useState("success");
   const [data, setData] = useState({});
   const [originalData, setOriginalData] = useState({});
-  const [file, setFile] = useState(null);
+  const [department, setDepartment] = useState([]);
 
   useEffect(() => {
     getUser();
   }, []);
+
+  // get department 
+
+  const getDepartment = async () => {
+    try {
+      const response = await getDepartmentList();
+
+      console.log('response', response)
+      if (response.status !== 200) return;
+      setDepartment(response?.data?.data);
+
+    } catch (error) {
+      showToast(error, "error");
+    }
+  };
+
+  // search
+  useEffect(() => {
+    getDepartment();
+  }, []);
+
 
   const getUser = async () => {
     try {
       const response = await getOneRec(id);
       setData(response?.data?.data || {});
       setOriginalData(response?.data?.data || {});
+      // setDepartment(response?.data?.data.department.id || {});
+
     } catch (error) {
-      showToast("Something Went Wrong",  "error");
+      showToast("Something Went Wrong", "error");
     }
   };
 
@@ -41,9 +65,6 @@ function EditDepartment() {
     setData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
 
 
   // handle submit
@@ -60,26 +81,31 @@ function EditDepartment() {
       // handle if no change
       if (isEqual(data, originalData)) {
         setMessage("You have not made any changes");
-        setVariant("warning");  
+        setVariant("warning");
         return
       }
 
       const payload = new FormData();
       payload.append("name", data.name || "");
-      payload.append("description", data.description || "");
-      
+      payload.append("email", data.email || "");
+      payload.append("phone", data.phone || "");
+      payload.append("appointmentCharges", data.appointmentCharges || "");
+      payload.append("dob", data.dob || "");
+      payload.append("qualification", data.qualification || "");
+      payload.append("departmentId", data.department?.id || "");
+
 
       const response = await updateOneRec(id, payload);
 
       if (response?.data?.success === true) {
         showToast(response?.data?.message, "success");
-        navigate("/departments/list");
+        navigate("/doctors/list");
       } else {
-        showToast(response?.message || response?.data?.message,  "error");
+        showToast(response?.message || response?.data?.message, "error");
       }
     } catch (error) {
       console.error(error);
-      showToast("Something Went Wrong",  "error");
+      showToast("Something Went Wrong", "error");
     }
   };
 
@@ -87,19 +113,17 @@ function EditDepartment() {
     <div className="d-flex justify-content-center">
       <form
         noValidate
-        className={`needs-validation card p-4 ${validated ? "was-validated" : ""}`}
+        className={`needs-validation card p-4 ${validated ? "was-validated" : ""
+          }`}
         style={{ width: "1000px" }}
         onSubmit={handleSubmit}
-        encType="multipart/form-data"
       >
-        <h3 className="mb-4">Edit Department</h3>
+        <h3 className="mb-4">Edit Doctor</h3>
         {message && (
           <div className={`alert alert-${variant} h6`} role="alert">
             {message}
           </div>
         )}
-
-        {/* Name & Father Name */}
         <div className="row mb-3">
           <div className="form-group col-lg-6">
             <label htmlFor="inputFname1">Name</label>
@@ -108,31 +132,122 @@ function EditDepartment() {
               className="form-control"
               id="inputFname1"
               name="name"
-              value={data.name || ""}
+              value={data.name}
               onChange={handleOnChange}
               required
             />
             <div className="invalid-feedback">Name is required</div>
           </div>
-
           <div className="form-group col-lg-6">
-            <label htmlFor="inputFName4">Description</label>
+            <label htmlFor="inputFName4">email</label>
+            <input
+              type="email"
+              className="form-control"
+              id="inputFName4"
+              name="email"
+              value={data.email}
+              onChange={handleOnChange}
+              required
+            />
+            <div className="invalid-feedback">Email is required</div>
+          </div>
+        </div>
+        <div className="row mb-3">
+          <div className="form-group col-lg-6">
+            <label htmlFor="inputFName4">DOB</label>
+            <input
+              type="date"
+              className="form-control"
+              id="inputFName4"
+              name="dob"
+              value={data.dob}
+              onChange={handleOnChange}
+            />
+          </div>
+          <div className="form-group col-lg-6">
+            <label htmlFor="inputFName4">Qualification</label>
             <input
               type="text"
               className="form-control"
               id="inputFName4"
-              name="description"
-              value={data.description || ""}
+              name="qualification"
+              value={data.qualification}
               onChange={handleOnChange}
-           
+              required
             />
-            
+            <div className="invalid-feedback">Qualification is required</div>
+          </div>
+        </div>
+        <div className="row mb-3">
+          <div className="form-group col-lg-6">
+            <label htmlFor="inputPassword4">Gender</label>
+            <select
+              name="gender"
+              className="form-control"
+              value={data.gender}
+              onChange={handleOnChange}
+              required
+            >
+              <option value="" disabled>
+                Select Gender
+              </option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+            <div className="invalid-feedback">Gender is required</div>
+          </div>
+          <div className="form-group col-lg-6">
+            <label htmlFor="inputFname1">Phone</label>
+            <input
+              type="text"
+              className="form-control"
+              id="inputFname1"
+              name="phone"
+              value={data.phone}
+              onChange={handleOnChange}
+              required
+            /> 
+            <div className="invalid-feedback">Phone is required</div>
+          </div>
+        </div>
+        <div className="row mb-3">
+          <div className="form-group col-lg-6">
+            <label htmlFor="inputPassword4">Department</label>
+            <select
+              name="departmentId"
+              className="form-control"
+              value={data?.department?.id || ""}   
+              onChange={handleOnChange}
+              required
+            >
+              <option value="" disabled>
+                Select Department
+              </option>
+              {department.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name} - {item.description}
+                </option>
+              ))}
+            </select>
+
+            <div className="invalid-feedback">Department is required</div>
+          </div>
+          <div className="form-group col-lg-6">
+            <label htmlFor="inputFName4">Appointment Charges</label>
+            <input
+              type="number"
+              className="form-control"
+              id="inputFName4"
+              name="appointmentCharges"
+              value={data.appointmentCharges}
+              onChange={handleOnChange}
+              required
+            />
+            <div className="invalid-feedback">Appointment Charges is required</div>
+
           </div>
         </div>
 
-      
-
-        {/* Submit */}
         <div>
           <button
             type="submit"
@@ -147,4 +262,4 @@ function EditDepartment() {
   );
 }
 
-export default EditDepartment;
+export default EditDoctor;

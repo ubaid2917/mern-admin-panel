@@ -11,3 +11,10 @@
     color: rgb(0, 0, 0);    
 } 
 
+.placeholder-light {
+  background-color: #e9ecef !important; /* very light grey */
+  opacity: 1 !important;
+  border-radius: 6px;
+  display: inline-block;
+  height: 16px; /* adjust thickness of skeleton */
+}

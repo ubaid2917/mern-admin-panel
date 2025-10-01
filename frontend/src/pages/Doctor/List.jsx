@@ -1,41 +1,48 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { deleteRec, getDepartmentList } from "../../API/Department";
+import { deleteRec, getList } from "../../API/doctor";
 import Message from "../../components/Message";
 import Pagination from "../../components/Pagination";
 import { useToast } from "../../components/ToastProvider";
-import DeleteModel from "../../components/DeleteModel";
-const DepartmentList = () => {
+import DeleteModel from "../../components/DeleteModel"; 
+import SkeletonTable from "../../components/skeletonTable";
+const DoctorList = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
   const { showToast } = useToast();
   const [deleteId, setDeleteId] = useState(null);
+  const [loading, setLoading] = useState(false);  
 
   // get user
-  const getDepartment = async ({ page, limit }) => {
+  const getDoctor = async ({ page, limit }) => {
     try {
-      const response = await getDepartmentList(search, limit, page);
+      setLoading(true);
+      const response = await getList(search, limit, page);
       if (response.status !== 200) return;
       setData(response?.data?.data);
 
     } catch (error) {
       showToast("Something Went Wrong", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
   // handle delete
   const handleDeleteUser = async (id) => {
     try {
-
+      setLoading(true)
       const response = await deleteRec(id);
       if (response.data.success !== false) {
         showToast(response?.data?.message, "success");
-        getDepartment({ page: 1, limit: 10 });
+        getDoctor({ page: 1, limit: 10 });
       }
 
     } catch (error) {
       showToast("Something Went Wrong", "error");
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -43,12 +50,12 @@ const DepartmentList = () => {
   const handleSearch = (event) => {
     const value = event.target.value;
     setSearch(value);
-    getDepartment({ page: 1, limit: 10 });
+    getDoctor({ page: 1, limit: 10 });
   };
 
   // search
   useEffect(() => {
-    getDepartment({ page: 1, limit: 10 });
+    getDoctor({ page: 1, limit: 10 });
   }, [search]);
 
   return (
@@ -58,10 +65,10 @@ const DepartmentList = () => {
       <div className="mt-1">
         <div className="d-flex justify-content-between">
           <div>
-            <h2 className="mb-4">Department List</h2>
+            <h2 className="mb-4">Doctor List</h2>
           </div>
           <div>
-            <Link to={"/departments/add"} className="btn" style={{ background: '#212529', color: '#fff' }}> Add Department </Link>
+            <Link to={"/doctors/add"} className="btn" style={{ background: '#212529', color: '#fff' }}> Add Doctor </Link>
           </div>
         </div>
 
@@ -77,19 +84,28 @@ const DepartmentList = () => {
                 <tr>
                   <th>#</th>
                   <th>Name</th>
-                  <th>Description</th>
+                  <th>email</th>
+                  <th>phone</th>
+                  <th>Appointment Charges</th>
+                  <th>Department</th>
 
                   <th>Created At</th>
                   <th>Action</th>
                 </tr>
               </thead>
+               {loading ? (
+                <SkeletonTable rows={6} />
+              ) : (
               <tbody>
                 {data?.length > 0 ? (
                   data.map((data, index) => (
                     <tr key={data.id} className="align-middle">
                       <td >{index + 1}</td>
                       <td>{data.name || "N/A"}</td>
-                      <td>{data.description || "N/A"}</td>
+                      <td>{data.email || "N/A"}</td>
+                      <td>{data.phone || "N/A"}</td>
+                      <td>{data.appointmentCharges || "N/A"}</td>
+                      <td>{data.department.name || "N/A"}</td>
 
                       <td>
                         {new Date(data.created).toLocaleString("en-US", {
@@ -114,7 +130,7 @@ const DepartmentList = () => {
                           </button>
                         ) : (
                           <Link
-                            to={`/departments/edit/${data.id}`}
+                            to={`/doctors/edit/${data.id}`}
                             className="btn btn-sm"
                             style={{ background: '#212529', color: '#fff' }}
                           >
@@ -143,10 +159,11 @@ const DepartmentList = () => {
                   </tr>
                 )}
               </tbody>
+              )}
             </table>
 
             {/* ✅ Pagination child */}
-            <Pagination onChange={getDepartment} />
+            <Pagination onChange={getDoctor} />
           </div>
         </div>
       </div>
@@ -155,4 +172,4 @@ const DepartmentList = () => {
   );
 };
 
-export default DepartmentList;
+export default DoctorList;

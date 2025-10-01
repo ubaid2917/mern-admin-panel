@@ -3,22 +3,29 @@ import { Link } from "react-router";
 import { deleteUser, getUserList } from "../../API/user";
 import Message from "../../components/Message";
 import Pagination from "../../components/Pagination";
+import SkeletonTable from "../../components/skeletonTable";
 
 const List = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
+   const [loading, setLoading] = useState(false);  
 
 
   // get user
   const getUser = async ({ page, limit }) => {
     try {
+      setLoading(true);
       const response = await getUserList(search, limit, page);
       if (response.status !== 200) return;
       setData(response?.data?.data);
+   
 
     } catch (error) {
       alert("Something went wrong");
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -84,6 +91,9 @@ const List = () => {
                   <th>Action</th>
                 </tr>
               </thead>
+               {loading ? (
+                <SkeletonTable rows={6} />
+              ) : (
               <tbody>
                 {data?.length > 0 ? (
                   data.map((user, index) => (
@@ -134,7 +144,8 @@ const List = () => {
                     </td>
                   </tr>
                 )}
-              </tbody>
+              </tbody> 
+              )}
             </table>
 
             {/* Pagination child */}
