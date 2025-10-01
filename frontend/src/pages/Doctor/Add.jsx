@@ -43,9 +43,9 @@ function AddDoctor() {
   };
 
   // search
-useEffect(() => {
-  getDepartment();
-}, []);
+  useEffect(() => {
+    getDepartment();
+  }, []);
 
 
 
@@ -75,7 +75,7 @@ useEffect(() => {
       payload.append("gender", formData.gender);
       payload.append("appointmentCharges", formData.appointmentCharges);
       payload.append("departmentId", formData.departmentId);
-      payload.append("password", formData.password);   
+      payload.append("password", formData.password);
 
 
       const response = await addRecord(payload);
@@ -182,7 +182,7 @@ useEffect(() => {
               </select>
               <div className="invalid-feedback">Gender is required</div>
             </div>
-           <div className="form-group col-lg-6">
+            <div className="form-group col-lg-6">
               <label htmlFor="inputFname1">Phone</label>
               <input
                 type="text"
@@ -247,12 +247,11 @@ useEffect(() => {
                 onChange={handleOnChange}
               />
             </div>
-           
+
           </div>
 
-
-
-          <div>
+        
+      <div>
             <button
               type="submit"
               className="btn float-end"
