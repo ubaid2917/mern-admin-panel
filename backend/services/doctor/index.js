@@ -9,7 +9,7 @@ const { createZoomMeeting } = require("../../utils/zoomService");
 
 const create = asyncErrorHandler(async (req, res) => {
   try {
-    const { email, phone, isLive } = req.body;
+    const { email, phone, password } = req.body;
 
     // Check Doctor already exist
     const isExist = await Doctor.findOne({ where: { email } });
@@ -20,7 +20,7 @@ const create = asyncErrorHandler(async (req, res) => {
     if (isExist?.phone === phone) {
       return error(res, "Phone already exist");
     }
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     req.body.password = hashedPassword;
 
@@ -130,7 +130,7 @@ const getOne = asyncErrorHandler(async (req, res) => {
       {
         model: Department,
         as: "department",
-        attributes: ["name"]
+        attributes: ["id", "name"]
       }
     ],
   });
