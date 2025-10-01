@@ -92,7 +92,7 @@ const List = () => {
                 </tr>
               </thead>
                {loading ? (
-                <SkeletonTable rows={6} />
+                <SkeletonTable rows={10} />
               ) : (
               <tbody>
                 {data?.length > 0 ? (
