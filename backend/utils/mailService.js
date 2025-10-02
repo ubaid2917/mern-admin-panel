@@ -19,7 +19,8 @@ async function sendEmail(to, subject, name, link, password, fees) {
   const templatePath = path.join(process.cwd(), "utils", "temp.html");
   const source = fs.readFileSync(templatePath, "utf8");
   const template = handlebars.compile(source);
-
+   
+  console.log('i am here ......')
   const templateData = {
     name,
     link,
@@ -27,11 +28,11 @@ async function sendEmail(to, subject, name, link, password, fees) {
     fees,
     year: new Date().getFullYear(),
   };
-
+ 
   const html = template(templateData);
 
   const mailOptions = {
-    from: `"Rb Live" <${process.env.MAIL_USER}>`,
+    from: `"HMS" <${process.env.MAIL_USER}>`,
     to,
     subject,
     html,

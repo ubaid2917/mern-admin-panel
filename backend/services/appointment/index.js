@@ -5,6 +5,7 @@ const { success, error } = require("../../utils/response");
 const { faker } = require("@faker-js/faker");
 const { Op } = require("sequelize");
 const { createZoomMeeting } = require("../../utils/zoomService");
+const { sendEmail } = require("../../utils/mailService");
 
 const create = asyncErrorHandler(async (req, res) => {
   try {
@@ -23,17 +24,25 @@ const create = asyncErrorHandler(async (req, res) => {
 
     let zoomMeeting = null;
     if (isLiveConsult === true) {
-      zoomMeeting = await createZoomMeeting(isExistDoctor?.email);   
-
-      console.log('zoomMeeting', zoomMeeting)
+      zoomMeeting = await createZoomMeeting(isExistDoctor?.email);
 
       req.body.meetingId = zoomMeeting.id;
       req.body.meetingUrl = zoomMeeting.join_url;
       req.body.startUrl = zoomMeeting.start_url;
       req.body.meetingPassword = zoomMeeting.password;
-    }  
 
-    req.body.fees = isExistDoctor?.appointmentCharges
+      await sendEmail(
+        "ubaid29170@gmail.com",
+        // "r.kmughal66@gmail.com",
+        "Your Appointment Details",
+        isExistPatient?.name,
+        req.body.meetingUrl, 
+        req.body.meetingPassword, 
+        isExistDoctor?.appointmentCharges 
+      );
+    }
+
+    req.body.fees = isExistDoctor?.appointmentCharges;
 
     const data = await Appointment.create(req.body);
     return success(res, TEXTS.CREATED, data, 201);
@@ -113,12 +122,12 @@ const get = asyncErrorHandler(async (req, res) => {
       {
         model: Patient,
         as: "patient",
-        attributes: ['id', 'name', 'phone'],
+        attributes: ["id", "name", "phone"],
       },
       {
         model: Doctor,
         as: "doctor",
-        attributes: ['id', 'name', 'phone'],
+        attributes: ["id", "name", "phone"],
       },
     ],
     order: [["created", "DESC"]],
@@ -140,17 +149,17 @@ const getOne = asyncErrorHandler(async (req, res) => {
   const { id } = req.params;
   const data = await Appointment.findOne({
     where: { id },
-     attributes: { exclude: ["deleted", "patientId", "doctorId"] },
+    attributes: { exclude: ["deleted", "patientId", "doctorId"] },
     include: [
       {
         model: Patient,
         as: "patient",
-        attributes: ['id', 'name', 'phone'],
+        attributes: ["id", "name", "phone"],
       },
       {
         model: Doctor,
         as: "doctor",
-        attributes: ['id', 'name', 'phone'],
+        attributes: ["id", "name", "phone"],
       },
     ],
   });
