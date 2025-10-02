@@ -63,10 +63,10 @@ const AppointmentList = () => {
       <div className="mt-1">
         <div className="d-flex justify-content-between">
           <div>
-            <h2 className="mb-4">Patient List</h2>
+            <h2 className="mb-4">Appointment List</h2>
           </div>
           <div>
-            <Link to={"/patients/add"} className="btn" style={{ background: '#212529', color: '#fff' }}> Add Patient </Link>
+            <Link to={"/appointments/add"} className="btn" style={{ background: '#212529', color: '#fff' }}> Add Appointment </Link>
           </div>
         </div>
 
