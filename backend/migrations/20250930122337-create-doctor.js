@@ -36,6 +36,9 @@ module.exports = {
       appointmentCharges: {
         type: Sequelize.INTEGER,
       },
+      dailyPatient: {
+        type: Sequelize.INTEGER,
+      },
       created: {
         allowNull: false,
         type: Sequelize.DATE

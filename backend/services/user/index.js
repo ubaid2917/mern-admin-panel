@@ -81,7 +81,7 @@ const update = asyncErrorHandler(async (req, res) => {
 const get = asyncErrorHandler(async (req, res) => {  
 
   const {search} = req.query;  
-  seed()
+  // seed()
 
   let whereCondition = {};
    

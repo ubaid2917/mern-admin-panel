@@ -40,6 +40,9 @@ class Doctor extends BaseModel {
         appointmentCharges: {
           type: DataTypes.INTEGER,
         },
+        dailyPatient: {
+          type: DataTypes.INTEGER,
+        },
         departmentId: {
           type: DataTypes.UUID,
           allowNull:false,

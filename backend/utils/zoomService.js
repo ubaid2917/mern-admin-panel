@@ -31,8 +31,14 @@ async function createZoomMeeting(userEmail) {
         topic: "Zoom Meeting",
         type: 1, // 1 for instant meeting,
         settings: {
-            host_video: true,
-            participant_video: true,
+             host_video: true,          // host video on
+        participant_video: false,  // participants video off
+        join_before_host: false,   // no join before host
+        waiting_room: true,        // waiting room enabled
+        mute_upon_entry: true,     // auto mute
+        allow_multiple_devices: false, 
+        approval_type: 2,          // manual approval
+        audio: "voip",
         }
       },
       {
