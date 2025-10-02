@@ -107,7 +107,20 @@ const get = asyncErrorHandler(async (req, res) => {
     };
   }
 
-  const { count, rows } = await Department.findAndCountAll({
+  const { count, rows } = await Appointment.findAndCountAll({
+    attributes: { exclude: ["deleted", "patientId", "doctorId"] },
+    include: [
+      {
+        model: Patient,
+        as: "patient",
+        attributes: ['id', 'name', 'phone'],
+      },
+      {
+        model: Doctor,
+        as: "doctor",
+        attributes: ['id', 'name', 'phone'],
+      },
+    ],
     order: [["created", "DESC"]],
     ...req.pagination,
     where: whereCondition,
@@ -125,15 +138,28 @@ const get = asyncErrorHandler(async (req, res) => {
 });
 const getOne = asyncErrorHandler(async (req, res) => {
   const { id } = req.params;
-  const data = await Department.findOne({
+  const data = await Appointment.findOne({
     where: { id },
+     attributes: { exclude: ["deleted", "patientId", "doctorId"] },
+    include: [
+      {
+        model: Patient,
+        as: "patient",
+        attributes: ['id', 'name', 'phone'],
+      },
+      {
+        model: Doctor,
+        as: "doctor",
+        attributes: ['id', 'name', 'phone'],
+      },
+    ],
   });
 
   return success(res, "Data Found", data, 200);
 });
 
 const del = asyncErrorHandler(async (req, res) => {
-  const data = await Department.findOne({
+  const data = await Appointment.findOne({
     where: { id: req.params?.id },
   });
 
@@ -141,7 +167,7 @@ const del = asyncErrorHandler(async (req, res) => {
     return error(res, TEXTS.NOT_FOUND);
   }
 
-  await Department.destroy({
+  await Appointment.destroy({
     where: { id: req.params?.id },
   });
 

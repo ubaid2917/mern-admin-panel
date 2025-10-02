@@ -69,6 +69,8 @@ class Appointment extends BaseModel {
 
   static associate(models) {
     // relationship here
+    Appointment.belongsTo(models.Patient, { foreignKey: "patientId", as: "patient" });
+    Appointment.belongsTo(models.Doctor, { foreignKey: "doctorId", as: "doctor" });
   }
 }
 

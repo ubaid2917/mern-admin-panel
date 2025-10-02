@@ -46,7 +46,7 @@ const List = () => {
     setSearch(event.target.value);
   };
 
-  // ✅ debounce effect for search
+  // debounce effect for search
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       getUser({ page: 1, limit: 10 });
@@ -55,7 +55,7 @@ const List = () => {
     return () => clearTimeout(delayDebounce); // cleanup
   }, [search]);
 
-  // ✅ initial fetch (when page loads)
+  // initial fetch (when page loads)
   useEffect(() => {
     getUser({ page: 1, limit: 10 });
   }, []);

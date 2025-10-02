@@ -50,14 +50,23 @@ const DoctorList = () => {
   const handleSearch = (event) => {
     const value = event.target.value;
     setSearch(value);
-    getDoctor({ page: 1, limit: 10 });
   };
 
   // search
+  useEffect(() => {  
+    const delayDebounce = setTimeout(() => {
+      
+      getDoctor({ page: 1, limit: 10 });
+    }, 500)  
+
+    return () => clearTimeout(delayDebounce)
+  }, [search]);
+   
+
+  // initial render 
   useEffect(() => {
     getDoctor({ page: 1, limit: 10 });
-  }, [search]);
-
+  }, []);
   return (
     <>
 
@@ -87,6 +96,7 @@ const DoctorList = () => {
                   <th>email</th>
                   <th>phone</th>
                   <th>Appointment Charges</th>
+                  <th>Daily patient Check</th>
                   <th>Department</th>
 
                   <th>Created At</th>
@@ -105,6 +115,7 @@ const DoctorList = () => {
                       <td>{data.email || "N/A"}</td>
                       <td>{data.phone || "N/A"}</td>
                       <td>{data.appointmentCharges || "N/A"}</td>
+                      <td>{data.dailyPatient || "N/A"}</td>
                       <td>{data.department.name || "N/A"}</td>
 
                       <td>

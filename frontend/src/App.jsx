@@ -5,22 +5,22 @@ import Topbar from "./components/Navbar";
 import RoutesComp from "./route";
 import Sidebar from "./components/Sidebar";
 import Message from "./components/Message";
-import { Route, Routes , Navigate, useNavigate} from "react-router"; 
+import { Route, Routes, Navigate, useNavigate } from "react-router";
 
 function App() {
 
-  const [token, setToken] = useState(localStorage.getItem("token"));   
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(token){
+    if (token) {
       localStorage.setItem("token", token);
-    }else{
+    } else {
       localStorage.removeItem("token");
-      navigate("/auth/login", )
+      navigate("/auth/login",)
     }
-  }, [token])   
+  }, [token])
 
   return (
     <>
@@ -35,11 +35,17 @@ function App() {
           </Routes>
         ) : (
           <>
-            <Topbar />
-            <div style={{ display: "flex", gap: "100px" }}>
-              <Sidebar setToken={setToken} />
-              <div className="flex-grow-1 p-4" style={{ marginLeft: "220px" }}>
-                <RoutesComp />
+
+            <div style={{ display: "flex", width: "100vw", height: "100vh", overflow: "hidden" }}>
+              <div style={{ width: "10vw" }}>
+
+                <Sidebar setToken={setToken} />
+              </div>
+              <div className="flex-grow-1" style={{ width: "90vw" }}>
+                <Topbar />
+                <div className="p-4">
+                  <RoutesComp />
+                </div>
               </div>
             </div>
             <div>

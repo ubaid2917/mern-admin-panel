@@ -25,6 +25,7 @@ function AddDoctor() {
     departmentId: "",
     password: "",
     phone: "",
+    dailyPatient: "",
   });
 
   // get department 
@@ -76,6 +77,7 @@ function AddDoctor() {
       payload.append("appointmentCharges", formData.appointmentCharges);
       payload.append("departmentId", formData.departmentId);
       payload.append("password", formData.password);
+      payload.append("dailyPatient", formData.dailyPatient);
 
 
       const response = await addRecord(payload);
@@ -83,7 +85,7 @@ function AddDoctor() {
       if (response?.data?.success === true) {
         showToast(response?.data?.message, "success");
 
-        navigate("/departments/list");
+        navigate("/doctors/list");
       } else {
         showToast(response?.message || response?.data?.message, "error");
       }
@@ -148,7 +150,7 @@ function AddDoctor() {
                 onChange={handleOnChange}
                 required
               />
-              <div className="invalid-feedback">Phone is required</div>
+              <div className="invalid-feedback">Password is required</div>
             </div>
             <div className="form-group col-lg-6">
               <label htmlFor="inputFName4">Qualification</label>
@@ -236,6 +238,21 @@ function AddDoctor() {
             </div>
           </div>
           <div className="row mb-3">
+              <div className="form-group col-lg-6">
+              <label htmlFor="inputFName4">Daily Patient Check</label>
+              <input
+                type="number"
+                className="form-control"
+                id="inputFName4"
+                name="dailyPatient"
+                value={formData.dailyPatient}
+                onChange={handleOnChange}
+                required
+
+              />
+                <div className="invalid-feedback">Daily Patient is required</div>
+            </div>
+
             <div className="form-group col-lg-6">
               <label htmlFor="inputFName4">DOB</label>
               <input
@@ -247,7 +264,7 @@ function AddDoctor() {
                 onChange={handleOnChange}
               />
             </div>
-
+          
           </div>
 
         
