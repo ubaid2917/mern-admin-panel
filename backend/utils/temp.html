@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zoom Meeting Invitation</title>
+</head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f7fb;">
+  <table align="center" cellpadding="0" cellspacing="0" width="600" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin:40px auto;">
+    <tr>
+      <td style="background:#2563eb;color:#fff;padding:30px;text-align:center;">
+        <h1 style="margin:0;font-size:22px;">Zoom Meeting Invitation</h1>
+        <p style="margin:5px 0 0;font-size:14px;">Teleconsultation Appointment</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:30px;">
+        <p style="font-size:14px;">Hello <strong>{{name}}</strong>,</p>
+        <p style="font-size:14px;line-height:1.6;">You have been invited to join a live consultation session.</p>
+
+        <p style="font-size:13px;color:#6b7280;margin:15px 0 4px;">Meeting Link:</p>
+        <p><a href="{{link}}" target="_blank" style="color:#2563eb;font-size:14px;word-break:break-all;">{{link}}</a></p>
+
+        <p style="font-size:13px;color:#6b7280;margin:15px 0 4px;">Meeting Password:</p>
+        <p style="background:#111827;color:#fff;display:inline-block;padding:6px 12px;border-radius:6px;font-weight:bold;">{{password}}</p>
+
+        <p style="font-size:13px;color:#6b7280;margin:15px 0 4px;">Consultation Fees:</p>
+        <p style="font-size:15px;font-weight:bold;">{{fees}} PKR</p>
+
+        <a href="{{link}}" target="_blank" style="display:block;width:100%;text-align:center;background:#2563eb;color:#fff;padding:14px;font-size:16px;font-weight:bold;border-radius:8px;text-decoration:none;margin-top:25px;">
+          Join Meeting
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="background:#f9fafb;padding:20px;text-align:center;font-size:12px;color:#6b7280;">
+        <p style="margin:0;">Please do not share this link with unauthorized persons.</p>
+        <p style="margin:5px 0 0;">&copy; {{year}}All Rights Reserved.</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
