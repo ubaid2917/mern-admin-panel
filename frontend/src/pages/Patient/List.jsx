@@ -40,7 +40,7 @@ const PatientList = () => {
         const response = await deleteRec(id);
         if (response.data.success !== false) {
           showToast(response?.data?.message, "success");
-          getPatient({ page: 1, limit: 10 });
+          getPatient({ page: 1, limit: 50 });
         }
       }
     } catch (error) {
@@ -52,12 +52,12 @@ const PatientList = () => {
   const handleSearch = (event) => {
     const value = event.target.value;
     setSearch(value);
-    getPatient();
+    getPatient({ page: 1, limit: 50 });
   };
 
   // search
   useEffect(() => {
-    getPatient({ page: 1, limit: 10 });
+    getPatient({ page: 1, limit: 50 });
   }, [search]);
 
   return (
@@ -91,7 +91,6 @@ const PatientList = () => {
                     <th>Blood Group</th>
                     <th>Phone</th>
                     <th>Dead</th>
-                    <th>Pic</th>
                     <th>Created At</th>
                     <th>Action</th>
                   </tr>
@@ -110,14 +109,7 @@ const PatientList = () => {
                           <td>{user.bloodGroup || "N/A"}</td>
                           <td>{user.phone || "N/A"}</td>
                           <td>{user.isDead === true ? "Yes" : user.isDead === false ? "No" : "N/A"}</td>
-                          <td >
-                            <img style={{
-                              width: '100px',
-                              height: '100px',
-                              objectFit: 'cover',
-                              borderRadius: '50%'
-                            }} src={user.pic} alt="" />
-                          </td>
+                         
                           <td>
                             {new Date(user.created).toLocaleString("en-US", {
                               day: "2-digit",

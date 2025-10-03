@@ -56,7 +56,7 @@ const DoctorList = () => {
   useEffect(() => {  
     const delayDebounce = setTimeout(() => {
       
-      getDoctor({ page: 1, limit: 10 });
+      getDoctor({ page: 1, limit: 50 });
     }, 500)  
 
     return () => clearTimeout(delayDebounce)
@@ -65,7 +65,7 @@ const DoctorList = () => {
 
   // initial render 
   useEffect(() => {
-    getDoctor({ page: 1, limit: 10 });
+    getDoctor({ page: 1, limit: 50 });
   }, []);
   return (
     <>
@@ -88,6 +88,7 @@ const DoctorList = () => {
             </div>
 
             {/* Table */}
+            <div style={{ height:"68vh",width:"87vw",overflowY: "auto" ,}}>
             <table className="table table-hover text-center">
               <thead className="table-dark">
                 <tr>
@@ -172,9 +173,20 @@ const DoctorList = () => {
               </tbody>
               )}
             </table>
+            </div>
 
             {/* ✅ Pagination child */}
+            <div>
+
+            
+             <div style={{  bottom: "30px", backgroundColor: "#fff", width: '100%' }}>
+
             <Pagination onChange={getDoctor} />
+            </div>
+
+            {/* Pagination */} 
+            
+          </div>
           </div>
         </div>
       </div>

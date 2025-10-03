@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const Pagination = ({ onChange }) => {
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(50);
 
   const handlePrevPage = () => {
     if (page > 1) {

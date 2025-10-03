@@ -72,6 +72,7 @@ const DepartmentList = () => {
             </div>
 
             {/* Table */}
+            <div style={{ height:"68vh",width:"87vw",overflowY: "auto" ,}}>
             <table className="table table-hover text-center">
               <thead className="table-dark">
                 <tr>
@@ -144,9 +145,12 @@ const DepartmentList = () => {
                 )}
               </tbody>
             </table>
+            </div>
 
             {/* ✅ Pagination child */}
+             <div style={{  bottom: "30px", backgroundColor: "#fff", width: '100%' }}>
             <Pagination onChange={getDepartment} />
+            </div>
           </div>
         </div>
       </div>

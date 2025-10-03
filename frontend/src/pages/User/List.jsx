@@ -33,7 +33,7 @@ const List = () => {
         const response = await deleteUser(id);
         if (response.data.success !== false) {
           setMessage("Record Deleted Successfully");
-          getUser({ page: 1, limit: 10 });
+          getUser({ page: 1, limit: 50 });
         }
       }
     } catch (error) {
@@ -49,7 +49,7 @@ const List = () => {
   // debounce effect for search
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      getUser({ page: 1, limit: 10 });
+      getUser({ page: 1, limit: 50 });
     }, 500); // wait 500ms after typing stops
 
     return () => clearTimeout(delayDebounce); // cleanup
@@ -57,7 +57,7 @@ const List = () => {
 
   // initial fetch (when page loads)
   useEffect(() => {
-    getUser({ page: 1, limit: 10 });
+    getUser({ page: 1, limit: 50 });
   }, []);
 
   return (

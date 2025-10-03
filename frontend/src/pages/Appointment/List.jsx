@@ -32,7 +32,7 @@ const AppointmentList = () => {
         const response = await deleteRec(id);
         if (response.data.success !== false) {
           setMessage("Record Deleted Successfully");
-          getPatient({ page: 1, limit: 10 });
+          getPatient({ page: 1, limit: 50 });
         }
       }
     } catch (error) {
@@ -54,7 +54,7 @@ const AppointmentList = () => {
 
   // search
   useEffect(() => {
-    getPatient({ page: 1, limit: 10 });
+    getPatient({ page: 1, limit: 50 });
   }, [search]);
 
   return (
@@ -104,10 +104,10 @@ const AppointmentList = () => {
             </div>
 
             {/* Table */}
-              
-              <div style={{ overflowY: "auto", maxHeight: "900px" }}>
-              <table className="table table-hover text-center" style={{  }}>
-                <thead className="table-dark">
+
+            <div style={{ overflowY: "auto", maxHeight: "900px" }}>
+              <table className="table table-hover text-center" style={{}}>
+                <thead className="table-dark" style={{position:"sticky",top:"0"}}> 
                   <tr>
                     <th>#</th>
                     <th>Patient Name</th>
@@ -116,7 +116,6 @@ const AppointmentList = () => {
                     <th>Blood Group</th>
                     <th>Phone</th>
                     <th>Dead</th>
-                    <th>Pic</th>
                     <th>Created At</th>
                     <th>Action</th>
                   </tr>
@@ -132,14 +131,7 @@ const AppointmentList = () => {
                         <td>{user.bloodGroup || "N/A"}</td>
                         <td>{user.phone || "N/A"}</td>
                         <td>{user.isDead === true ? "Yes" : user.isDead === false ? "No" : "N/A"}</td>
-                        <td >
-                          <img style={{
-                            width: '100px',
-                            height: '100px',
-                            objectFit: 'cover',
-                            borderRadius: '50%'
-                          }} src={user.pic} alt="" />
-                        </td>
+
                         <td>
                           {new Date(user.created).toLocaleString("en-US", {
                             day: "2-digit",
@@ -189,11 +181,13 @@ const AppointmentList = () => {
                   )}
                 </tbody>
               </table>
-</div>
-         
+            </div>
+
 
             {/* ✅ Pagination child */}
-            <Pagination onChange={getPatient} />
+             <div style={{  bottom: "30px", backgroundColor: "#fff", width: '100%' }}>
+            <Pagination onChange={getPatient} /> 
+            </div>
           </div>
         </div>
       </div>
