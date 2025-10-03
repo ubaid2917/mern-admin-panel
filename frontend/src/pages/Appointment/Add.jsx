@@ -5,6 +5,7 @@ import App from "../../App";
 import { addRecord } from "../../../src/API/doctor";
 import { getPatientList } from "../../../src/API/patients";
 import { useToast } from "../../components/ToastProvider";
+import Select from "react-select";
 function AddAppointment() {
   const navigate = useNavigate();
   const { showToast } = useToast();
@@ -29,15 +30,17 @@ function AddAppointment() {
   });
 
   // get department    
-  const getPatient = async () => {
+  const getPatient = async (searchValue = '') => {
     try {
-      const response = await getPatientList(search, 10, 1);
-
-      console.log('response', response) 
-
-      console.log('response data', response?.data)
-      setPatient(response?.data?.data);
+      const response = await getPatientList(searchValue, 10, 1);  
       if (response.status !== 200) return;
+      const options = response?.data?.data?.map((item) => ({
+        value: item.id,
+        label: item.name,
+      }));  
+
+      console.log('option', options)
+      setPatient(options);
 
     } catch (error) {
       showToast(error, "error");
@@ -47,16 +50,27 @@ function AddAppointment() {
   // search
   useEffect(() => {
     getPatient();
-  }, [search]);
+  }, []);
 
   
   console.log("patient", patient)
 
+const handleSearch = (inputValue) => {
+    if (inputValue.length > 0) {
+      getPatient(inputValue); // search patients
+    }
+  };
+
+  // handle form change
   const handleOnChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // ✅ handle dropdown change
+  const handlePatientChange = (selectedOption) => {
+    setFormData({ ...formData, departmentId: selectedOption?.value || "" });
+  };
   // handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -201,29 +215,21 @@ function AddAppointment() {
             </div>
           </div>
           <div className="row mb-3">
-            <div className="form-group col-lg-6">
-              <label htmlFor="inputPassword4">Patient</label>
-              <select
-                name="departmentId"
-                className="form-control"
-                value={formData.departmentId}
-                onChange={handleOnChange}
-                required
-              >
-                <option value="" disabled>
-                  Select Patient
-                </option>
-                {
-                  patient.map((item) => {
-                    return (
-                      <option value={item.id}>{item.name} </option>
-                    )
-                  })
-                }
-
-              </select>
-              <div className="invalid-feedback">Department is required</div>
-            </div>
+          <div className="form-group col-lg-6">
+            <label>Patient</label>
+            <Select
+              options={patient}
+              onInputChange={handleSearch}   
+              onChange={handlePatientChange} 
+              placeholder="Select Patient"
+              isClearable
+            />
+            {formData && !formData.departmentId && (
+              <div className="invalid-feedback d-block">
+                Patient is required
+              </div>
+            )}
+          </div>
             <div className="form-group col-lg-6">
               <label htmlFor="inputFName4">Appointment Charges</label>
               <input

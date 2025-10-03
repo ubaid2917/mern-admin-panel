@@ -62,7 +62,7 @@ const List = () => {
 
   return (
     <>
-      <Message message={message} />
+  
       <div className="mt-1">
         <div className="d-flex justify-content-between">
           <div>
@@ -88,8 +88,9 @@ const List = () => {
             </div>
 
             {/* Table */}
-            <table className="table table-hover text-center">
-              <thead className="table-dark">
+              <div style={{ height:"68vh",width:"87vw",overflowY: "auto" ,}}>
+            <table className="table table-hover text-center" >
+              <thead className="table-dark" style={{position:"sticky",top:"0"}}>
                 <tr>
                   <th>#</th>
                   <th>Name</th>
@@ -103,10 +104,10 @@ const List = () => {
               {loading ? (
                 <SkeletonTable rows={10} />
               ) : (
-                <tbody>
+                <tbody  >
                   {data?.length > 0 ? (
                     data.map((user, index) => (
-                      <tr key={user.id}>
+                      <tr key={user.id} >
                         <td>{index + 1}</td>
                         <td>{user.name || "N/A"}</td>
                         <td>{user.email || "N/A"}</td>
@@ -157,10 +158,17 @@ const List = () => {
                   )}
                 </tbody>
               )}
+        
             </table>
+              </div>
 
-            {/* Pagination */}
+              <div style={{  bottom: "30px", backgroundColor: "#fff", width: '100%' }}>
+
             <Pagination onChange={getUser} />
+            </div>
+
+            {/* Pagination */} 
+            
           </div>
         </div>
       </div>

@@ -24,8 +24,8 @@ function Sidebar({ setToken }) {
 
   return (
     <div
-      className="bg-dark text-white vh-100 p-3 "
-      style={{ width: "10vw", }}
+      className="bg-dark text-white vh-100 p-3 mt:2"
+      style={{ width: "10vw",}}
     >
       <h4>Admin Panel</h4>
       <ul className="nav flex-column">

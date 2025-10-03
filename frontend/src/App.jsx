@@ -37,11 +37,10 @@ function App() {
           <>
 
             <div style={{ display: "flex", width: "100vw", height: "100vh", overflow: "hidden" }}>
-              <div style={{ width: "10vw" }}>
-
+              <div style={{ width: "10vw", }}>
                 <Sidebar setToken={setToken} />
               </div>
-              <div className="flex-grow-1" style={{ width: "90vw" }}>
+              <div className="flex-grow-1" style={{ width: "90vw",overflow: "hidden" }}>
                 <Topbar />
                 <div className="p-4">
                   <RoutesComp />
