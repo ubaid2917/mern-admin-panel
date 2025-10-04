@@ -17,8 +17,8 @@ function AddAppointment() {
   const [patient, setPatient] = useState([]);
   const [search, setSearch] = useState('');
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    date: "",
+    payment: "",
     isLiveConsult: "",
     qualification: "",
     dob: "",
@@ -84,14 +84,9 @@ const handleSearch = (inputValue) => {
 
       const payload = new FormData();
 
-      payload.append("name", formData.name);
-      payload.append("email", formData.email);
-      payload.append("phone", formData.phone);
+      payload.append("date", formData.date);
+      payload.append("payment", formData.payment);
       payload.append("isLiveConsult", formData.isLiveConsult);
-      payload.append("dob", formData.dob);
-      payload.append("gender", formData.gender);
-      payload.append("appointmentCharges", formData.appointmentCharges);
-      payload.append("departmentId", formData.departmentId);
       payload.append("password", formData.password);
       payload.append("dailyPatient", formData.dailyPatient);
 
