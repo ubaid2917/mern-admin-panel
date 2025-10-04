@@ -19,7 +19,7 @@ function AddAppointment() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    gender: "",
+    isLiveConsult: "",
     qualification: "",
     dob: "",
     appointmentCharges: "",
@@ -87,7 +87,7 @@ const handleSearch = (inputValue) => {
       payload.append("name", formData.name);
       payload.append("email", formData.email);
       payload.append("phone", formData.phone);
-      payload.append("qualification", formData.qualification);
+      payload.append("isLiveConsult", formData.isLiveConsult);
       payload.append("dob", formData.dob);
       payload.append("gender", formData.gender);
       payload.append("appointmentCharges", formData.appointmentCharges);
@@ -184,21 +184,21 @@ const handleSearch = (inputValue) => {
           </div>
           <div className="row mb-3">
             <div className="form-group col-lg-6">
-              <label htmlFor="inputPassword4">Gender</label>
+              <label htmlFor="inputPassword4">Is Live Consult</label>
               <select
-                name="gender"
+                name="isLiveConsult"
                 className="form-control"
-                value={formData.gender}
+                value={formData.isLiveConsult}
                 onChange={handleOnChange}
                 required
               >
                 <option value="" disabled>
-                  Select Gender
+                  Select Option
                 </option>
-                <option value="male">Male</option>Doctor
-                <option value="female">Female</option>
+                <option value="true">Yes</option>Doctor
+                <option value="false">No</option>
               </select>
-              <div className="invalid-feedback">Gender is required</div>
+              <div className="invalid-feedback">isLiveConsult is required</div>
             </div>
             <div className="form-group col-lg-6">
               <label htmlFor="inputFname1">Phone</label>
