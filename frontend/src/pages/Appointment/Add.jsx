@@ -54,8 +54,26 @@ function AddAppointment() {
     getPatient();
   }, []);
 
+const handleSearch = (inputValue) => {
+    if (inputValue.length > 0) {
+      getPatient(inputValue); // search patients
+    }
+  };
 
-    // get doctor    
+  // handle form change
+  const handleOnChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // ✅ handle dropdown change
+  const handlePatientChange = (selectedOption) => {
+    setFormData({ ...formData, departmentId: selectedOption?.value || "" });
+  };   
+
+
+// get doctor 
+  // get department    
   const getDoctor = async (searchValue = '') => {
     try {
       const response = await getList(searchValue, 10, 1);  
@@ -78,26 +96,24 @@ function AddAppointment() {
     getDoctor();
   }, []);
 
-  
-  
-  
-
-const handleSearch = (inputValue) => {
+const handleDRSearch = (inputValue) => {
     if (inputValue.length > 0) {
-      getPatient(inputValue); // search patients
+      getDoctor(inputValue); // search patients
     }
   };
 
   // handle form change
-  const handleOnChange = (event) => {
+  const handleDrOnChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
 
   // ✅ handle dropdown change
-  const handlePatientChange = (selectedOption) => {
+  const handleDoctorChange = (selectedOption) => {
     setFormData({ ...formData, departmentId: selectedOption?.value || "" });
-  };
+  };   
+
+
   // handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -167,15 +183,15 @@ const handleSearch = (inputValue) => {
              <div className="form-group col-lg-6">
             <label>Doctor</label>
             <Select
-              options={patient}
-              onInputChange={handleSearch}   
-              onChange={handlePatientChange} 
+              options={doctor}
+              onInputChange={handleDRSearch}   
+              onChange={handleDoctorChange} 
               placeholder="Select Doctor"
               isClearable
             />
             {formData && !formData.patientId && (
               <div className="invalid-feedback d-block">
-                Patient is required
+                Doctor is required
               </div>
             )}
           </div>
