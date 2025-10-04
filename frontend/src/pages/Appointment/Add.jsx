@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Message from "../../components/Message";
 import App from "../../App";
-import { addRecord } from "../../../src/API/doctor";
+import { addRecord, getList } from "../../../src/API/doctor";
 import { getPatientList } from "../../../src/API/patients";
 import { useToast } from "../../components/ToastProvider";
 import Select from "react-select";
@@ -15,7 +15,9 @@ function AddAppointment() {
   const [message, setMessage] = useState("");
   const [variant, setVariant] = useState("success");
   const [patient, setPatient] = useState([]);
+  const [doctor, setDoctor] = useState([]);
   const [search, setSearch] = useState('');
+  const [searchDr, setSearchDr] = useState('');
   const [formData, setFormData] = useState({
     date: "",
     payment: "",
@@ -52,8 +54,33 @@ function AddAppointment() {
     getPatient();
   }, []);
 
+
+    // get doctor    
+  const getDoctor = async (searchValue = '') => {
+    try {
+      const response = await getList(searchValue, 10, 1);  
+      if (response.status !== 200) return;
+      const options = response?.data?.data?.map((item) => ({
+        value: item.id,
+        label: item.name,
+      }));  
+
+      console.log('option', options)
+      setDoctor(options);
+
+    } catch (error) {
+      showToast(error, "error");
+    }
+  };
+
+  // search
+  useEffect(() => {
+    getDoctor();
+  }, []);
+
   
-  console.log("patient", patient)
+  
+  
 
 const handleSearch = (inputValue) => {
     if (inputValue.length > 0) {
@@ -123,31 +150,35 @@ const handleSearch = (inputValue) => {
           )}
           <div className="row mb-3">
             <div className="form-group col-lg-6">
-              <label htmlFor="inputFname1">Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="inputFname1"
-                name="name"
-                value={formData.name}
-                onChange={handleOnChange}
-                required
-              />
-              <div className="invalid-feedback">Name is required</div>
-            </div>
-            <div className="form-group col-lg-6">
-              <label htmlFor="inputFName4">email</label>
-              <input
-                type="email"
-                className="form-control"
-                id="inputFName4"
-                name="email"
-                value={formData.email}
-                onChange={handleOnChange}
-                required
-              />
-              <div className="invalid-feedback">Email is required</div>
-            </div>
+            <label>Patient</label>
+            <Select
+              options={patient}
+              onInputChange={handleSearch}   
+              onChange={handlePatientChange} 
+              placeholder="Select Patient"
+              isClearable
+            />
+            {formData && !formData.departmentId && (
+              <div className="invalid-feedback d-block">
+                Patient is required
+              </div>
+            )}
+          </div>
+             <div className="form-group col-lg-6">
+            <label>Doctor</label>
+            <Select
+              options={patient}
+              onInputChange={handleSearch}   
+              onChange={handlePatientChange} 
+              placeholder="Select Doctor"
+              isClearable
+            />
+            {formData && !formData.patientId && (
+              <div className="invalid-feedback d-block">
+                Patient is required
+              </div>
+            )}
+          </div>
           </div>
           <div className="row mb-3">
             <div className="form-group col-lg-6">
