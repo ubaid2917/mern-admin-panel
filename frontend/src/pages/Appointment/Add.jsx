@@ -196,34 +196,7 @@ const handleDRSearch = (inputValue) => {
             )}
           </div>
           </div>
-          <div className="row mb-3">
-            <div className="form-group col-lg-6">
-              <label htmlFor="inputFname1">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="inputFname1"
-                name="password"
-                value={formData.password}
-                onChange={handleOnChange}
-                required
-              />
-              <div className="invalid-feedback">Password is required</div>
-            </div>
-            <div className="form-group col-lg-6">
-              <label htmlFor="inputFName4">Qualification</label>
-              <input
-                type="text"
-                className="form-control"
-                id="inputFName4"
-                name="qualification"
-                value={formData.qualification}
-                onChange={handleOnChange}
-                required
-              />
-              <div className="invalid-feedback">Qualification is required</div>
-            </div>
-          </div>
+        
           <div className="row mb-3">
             <div className="form-group col-lg-6">
               <label htmlFor="inputPassword4">Is Live Consult</label>
@@ -243,76 +216,40 @@ const handleDRSearch = (inputValue) => {
               <div className="invalid-feedback">isLiveConsult is required</div>
             </div>
             <div className="form-group col-lg-6">
-              <label htmlFor="inputFname1">Phone</label>
-              <input
-                type="text"
+              <label htmlFor="inputPassword4">Payment Mode</label>
+              <select
+                name="payment"
                 className="form-control"
-                id="inputFname1"
-                name="phone"
-                value={formData.phone}
+                value={formData.payment}
                 onChange={handleOnChange}
                 required
-              />
-              <div className="invalid-feedback">Phone is required</div>
+              >
+                <option value="" disabled>
+                  Select Payment Option
+                </option>
+                <option value="cash">Cash</option>
+                <option value="check">Cheque</option>
+                <option value="online">online</option>
+              </select>
+              <div className="invalid-feedback">Payment Mode is required</div>
             </div>
           </div>
+  
           <div className="row mb-3">
-          <div className="form-group col-lg-6">
-            <label>Patient</label>
-            <Select
-              options={patient}
-              onInputChange={handleSearch}   
-              onChange={handlePatientChange} 
-              placeholder="Select Patient"
-              isClearable
-            />
-            {formData && !formData.departmentId && (
-              <div className="invalid-feedback d-block">
-                Patient is required
-              </div>
-            )}
-          </div>
-            <div className="form-group col-lg-6">
-              <label htmlFor="inputFName4">Appointment Charges</label>
-              <input
-                type="number"
-                className="form-control"
-                id="inputFName4"
-                name="appointmentCharges"
-                value={formData.appointmentCharges}
-                onChange={handleOnChange}
-                required
-              />
-              <div className="invalid-feedback">Appointment Charges is required</div>
-
-            </div>
-          </div>
-          <div className="row mb-3">
-              <div className="form-group col-lg-6">
-              <label htmlFor="inputFName4">Daily Patient Check</label>
-              <input
-                type="number"
-                className="form-control"
-                id="inputFName4"
-                name="dailyPatient"
-                value={formData.dailyPatient}
-                onChange={handleOnChange}
-                required
-
-              />
-                <div className="invalid-feedback">Daily Patient is required</div>
-            </div>
+              
 
             <div className="form-group col-lg-6">
-              <label htmlFor="inputFName4">DOB</label>
+              <label htmlFor="inputFName4">Appointment Date</label>
               <input
-                type="date"
+                type="datetime-local"
                 className="form-control"
                 id="inputFName4"
                 name="dob"
-                value={formData.dob}
+                value={formData.date}
                 onChange={handleOnChange}
+                required
               />
+              <div className="invalid-feedback">Date is required</div>
             </div>
           
           </div>
