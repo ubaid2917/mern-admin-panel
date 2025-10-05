@@ -22,6 +22,7 @@ const create = asyncErrorHandler(async (req, res) => {
       return error(res, "Doctor not found");
     }
 
+    //create google meet service
     let zoomMeeting = null;
     if (isLiveConsult === true) {
       zoomMeeting = await createZoomMeeting(isExistDoctor?.email);
