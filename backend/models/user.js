@@ -21,6 +21,7 @@ class User extends BaseModel {
         city: DataTypes.STRING,
         zip: DataTypes.STRING,
         password: DataTypes.STRING,
+        role: DataTypes.ENUM("user", "admin", "doctor", "patient"),
       },
       {
         modelName: "User",  

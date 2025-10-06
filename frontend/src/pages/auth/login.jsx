@@ -38,8 +38,9 @@ function Login({ setToken }) {
         }
         localStorage.setItem("token", response?.data?.token);
         setToken(response?.data?.token);
-        showToast("Login Successfully", "success");
-        // setMessage("Login Successfully");
+        showToast("Login Successfully", "success");   
+
+        if(response) 
 
         navigate("/dashboard");
       } catch (error) {
