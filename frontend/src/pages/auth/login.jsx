@@ -13,9 +13,7 @@ function Login({ setToken }) {
     email: "",
     password: "",
   });
-  const {showToast} = useToast();  
-
-
+  const { showToast } = useToast();
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -36,16 +34,16 @@ function Login({ setToken }) {
         if (response?.success === false) {
           return setError(response?.message);
         }
+
         localStorage.setItem("token", response?.data?.token);
         localStorage.setItem("user", JSON.stringify(response?.data?.user));
         setToken(response?.data?.token);
-        
-        showToast("Login Successfully", "success");   
 
-        if(response?.data.user?.role === "doctor"){
+        showToast("Login Successfully", "success");
+
+        if (response?.data.user?.role === "doctor") {
           navigate("/doctor/dashboard");
-        }else{
-
+        } else {
           navigate("/dashboard");
         }
 
@@ -59,33 +57,38 @@ function Login({ setToken }) {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100">
+    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
       <Message message={message} />
 
       <form
         noValidate
-        className={`card p-4 shadow needs-validation ${validated ? "was-validated" : ""
-          }`}
-        style={{ width: "450px" }}
+        className={`card p-5 shadow-lg needs-validation ${validated ? "was-validated" : ""}`}
+        style={{
+          width: "550px",           
+          borderRadius: "20px",     
+          backgroundColor: "#fff",
+        }}
         onSubmit={handleSubmit}
       >
-        <div className="mb-3 text-center">
-
-          <h4>Welcome back</h4>
+        <div className="mb-4 text-center">
+          <h3 style={{ fontWeight: "bold", fontSize: "1.8rem" }}>Welcome Back</h3>
+          <p className="text-muted" style={{ fontSize: "0.95rem" }}>
+            Please login to continue
+          </p>
         </div>
-        {
-          error && (
-            <div className="alert alert-danger  text-center text-danger">{error}</div>
-          )
-        }
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">
+
+        {error && (
+          <div className="alert alert-danger text-center">{error}</div>
+        )}
+
+        <div className="mb-4">
+          <label htmlFor="email" className="form-label fw-semibold">
             Email address
           </label>
           <input
             type="email"
             name="email"
-            className="form-control"
+            className="form-control form-control-lg" 
             id="email"
             value={formData.email}
             onChange={handleOnChange}
@@ -94,27 +97,28 @@ function Login({ setToken }) {
           <div className="invalid-feedback">Enter a valid email</div>
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="password" className="form-label">
+        <div className="mb-5">
+          <label htmlFor="password" className="form-label fw-semibold">
             Password
           </label>
           <input
             type="password"
             name="password"
-            className="form-control"
+            className="form-control form-control-lg" 
             id="password"
             value={formData.password}
             onChange={handleOnChange}
             required
-
           />
-          <div className="invalid-feedback">
-            Password must be required
-          </div>
+          <div className="invalid-feedback">Password is required</div>
         </div>
 
-        <button type="submit" className="btn mb-4 btn-secondary">
-          Submit
+        <button
+          type="submit"
+          className="btn btn-secondary btn-lg w-100" 
+          style={{ borderRadius: "10px" }}
+        >
+          Login
         </button>
       </form>
     </div>
