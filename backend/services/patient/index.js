@@ -8,7 +8,7 @@ const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 const create = asyncErrorHandler(async (req, res) => {
   try {
-    const { phone } = req.body;
+    const { phone, email } = req.body;
 
     // Check phone already exist
     const isExistPhone = await Patient.findOne({ where: { phone } });

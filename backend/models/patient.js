@@ -21,7 +21,8 @@ class Patient extends BaseModel {
         isDead: {
           type:  DataTypes.BOOLEAN,
           defaultValue: false
-        }
+        }, 
+        email: DataTypes.STRING
        ,
       },
       {
