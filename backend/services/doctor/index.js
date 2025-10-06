@@ -1,6 +1,6 @@
 const asyncErrorHandler = require("../../utils/asyncErrorHandler");
 const { TEXTS, STATUS_CODES } = require("../../config/constants");
-const { Doctor , Department} = require("../../models");
+const { Doctor , Department, User} = require("../../models");
 const { success, error } = require("../../utils/response");
 const { faker } = require("@faker-js/faker");
 const { Op } = require("sequelize");
@@ -24,7 +24,15 @@ const create = asyncErrorHandler(async (req, res) => {
 
     req.body.password = hashedPassword;
 
-    const data = await Doctor.create(req.body);
+    const data = await Doctor.create(req.body);  
+
+    await User.create({
+      name: req.body?.name,
+      email: email,
+      password: hashedPassword,
+      role: "doctor",
+      phone: phone
+    })
     return success(res, TEXTS.CREATED, data, 201);
   } catch (err) {
     return error(res, "Failed to create record", [err.message], 500);

@@ -1,10 +1,11 @@
 const asyncErrorHandler = require("../../utils/asyncErrorHandler");
 const { TEXTS, STATUS_CODES } = require("../../config/constants");
-const { Patient } = require("../../models");
+const { Patient, User } = require("../../models");
 const { success, error } = require("../../utils/response");
 const { handleFileUpload } = require("../../utils/fileUpload"); 
 const { faker } = require('@faker-js/faker');
-const { Op } = require("sequelize");
+const { Op } = require("sequelize"); 
+const bcrypt = require("bcrypt");
 const create = asyncErrorHandler(async (req, res) => {
   try {
     const { phone } = req.body;
@@ -26,7 +27,18 @@ const create = asyncErrorHandler(async (req, res) => {
       req.body.pic = uploaded.fileUrl;
     }
 
-    const data = await Patient.create(req.body);
+    const data = await Patient.create(req.body);    
+
+    const hashedPassword = await bcrypt.hash("12345678", 10);
+
+    await User.create({
+      name: req.body?.name,
+      email: req.body?.email,
+      password: hashedPassword,
+      role: "patient",
+      phone: phone
+    }) 
+
     return success(res, TEXTS.CREATED, data, 201);
   } catch (err) {
     return error(res, "Failed to create patient", [err.message], 500);
