@@ -11,6 +11,10 @@ const create = asyncErrorHandler(async (req, res) => {
   try {
     const { patientId, doctorId, isLiveConsult } = req.body;
 
+    if (typeof req.body.isLiveConsult === "string") {
+      req.body.isLiveConsult = req.body.isLiveConsult === "true";
+    }
+
     // Check patient  exist
     const isExistPatient = await Patient.findOne({ where: { id: patientId } });
     if (!isExistPatient) {
@@ -21,25 +25,26 @@ const create = asyncErrorHandler(async (req, res) => {
     if (!isExistDoctor) {
       return error(res, "Doctor not found");
     }
-
+    
     //create google meet service
     let zoomMeeting = null;
-    if (isLiveConsult === true) {
+    if (req.body.isLiveConsult === true) { 
       zoomMeeting = await createZoomMeeting(isExistDoctor?.email);
 
       req.body.meetingId = zoomMeeting.id;
       req.body.meetingUrl = zoomMeeting.join_url;
       req.body.startUrl = zoomMeeting.start_url;
-      req.body.meetingPassword = zoomMeeting.password;
-
+      req.body.meetingPassword = zoomMeeting.password;  
+  
+      
       await sendEmail(
         "ubaid29170@gmail.com",
         // "r.kmughal66@gmail.com",
         "Your Appointment Details",
         isExistPatient?.name,
-        req.body.meetingUrl, 
-        req.body.meetingPassword, 
-        isExistDoctor?.appointmentCharges 
+        req.body.meetingUrl,
+        req.body.meetingPassword,
+        isExistDoctor?.appointmentCharges
       );
     }
 

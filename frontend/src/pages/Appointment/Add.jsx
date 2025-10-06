@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Message from "../../components/Message";
 import App from "../../App";
-import { addRecord, getList } from "../../../src/API/doctor";
+import {  getList } from "../../../src/API/doctor";
+import {  addRecord } from "../../../src/API/appointment";
 import { getPatientList } from "../../../src/API/patients";
 import { useToast } from "../../components/ToastProvider";
 import Select from "react-select";
@@ -22,24 +23,21 @@ function AddAppointment() {
     date: "",
     payment: "",
     isLiveConsult: "",
-    qualification: "",
-    dob: "",
-    appointmentCharges: "",
-    departmentId: "",
-    password: "",
-    phone: "",
-    dailyPatient: "",
+    doctorId: "",
+    patientId: "",
+
   });
+
 
   // get department    
   const getPatient = async (searchValue = '') => {
     try {
-      const response = await getPatientList(searchValue, 10, 1);  
+      const response = await getPatientList(searchValue, 10, 1);
       if (response.status !== 200) return;
       const options = response?.data?.data?.map((item) => ({
         value: item.id,
         label: item.name,
-      }));  
+      }));
 
       console.log('option', options)
       setPatient(options);
@@ -54,7 +52,7 @@ function AddAppointment() {
     getPatient();
   }, []);
 
-const handleSearch = (inputValue) => {
+  const handleSearch = (inputValue) => {
     if (inputValue.length > 0) {
       getPatient(inputValue); // search patients
     }
@@ -63,25 +61,32 @@ const handleSearch = (inputValue) => {
   // handle form change
   const handleOnChange = (event) => {
     const { name, value } = event.target;
+  //   let finalValue = value;  
+
+   
+  // if (name === "isLiveConsult") {
+  //   finalValue = value === "true"; // true or false (boolean)
+  // } 
+
     setFormData({ ...formData, [name]: value });
   };
 
   // ✅ handle dropdown change
   const handlePatientChange = (selectedOption) => {
-    setFormData({ ...formData, departmentId: selectedOption?.value || "" });
-  };   
+    setFormData({ ...formData, patientId: selectedOption?.value || "" });
+  };
 
 
-// get doctor 
+  // get doctor 
   // get department    
   const getDoctor = async (searchValue = '') => {
     try {
-      const response = await getList(searchValue, 10, 1);  
+      const response = await getList(searchValue, 10, 1);
       if (response.status !== 200) return;
       const options = response?.data?.data?.map((item) => ({
         value: item.id,
         label: item.name,
-      }));  
+      }));
 
       console.log('option', options)
       setDoctor(options);
@@ -96,7 +101,7 @@ const handleSearch = (inputValue) => {
     getDoctor();
   }, []);
 
-const handleDRSearch = (inputValue) => {
+  const handleDRSearch = (inputValue) => {
     if (inputValue.length > 0) {
       getDoctor(inputValue); // search patients
     }
@@ -110,8 +115,8 @@ const handleDRSearch = (inputValue) => {
 
   // ✅ handle dropdown change
   const handleDoctorChange = (selectedOption) => {
-    setFormData({ ...formData, departmentId: selectedOption?.value || "" });
-  };   
+    setFormData({ ...formData, doctorId: selectedOption?.value || "" });
+  };
 
 
   // handle submit
@@ -130,16 +135,18 @@ const handleDRSearch = (inputValue) => {
       payload.append("date", formData.date);
       payload.append("payment", formData.payment);
       payload.append("isLiveConsult", formData.isLiveConsult);
-      payload.append("password", formData.password);
-      payload.append("dailyPatient", formData.dailyPatient);
-
+ 
+      payload.append("doctorId", formData.doctorId);
+      payload.append("patientId", formData.patientId);
+    
+      console.log('payload', payload.isLiveConsult)
 
       const response = await addRecord(payload);
 
       if (response?.data?.success === true) {
         showToast(response?.data?.message, "success");
 
-        navigate("/doctors/list");
+        navigate("/appointments/list");
       } else {
         showToast(response?.message || response?.data?.message, "error");
       }
@@ -166,37 +173,38 @@ const handleDRSearch = (inputValue) => {
           )}
           <div className="row mb-3">
             <div className="form-group col-lg-6">
-            <label>Patient</label>
-            <Select
-              options={patient}
-              onInputChange={handleSearch}   
-              onChange={handlePatientChange} 
-              placeholder="Select Patient"
-              isClearable
-            />
-            {formData && !formData.departmentId && (
-              <div className="invalid-feedback d-block">
-                Patient is required
-              </div>
-            )}
+              <label>Patient</label>
+              <Select
+                options={patient}
+                onInputChange={handleSearch}
+                onChange={handlePatientChange}
+                placeholder="Select Patient"
+                isClearable
+              />
+              {validated && !formData.patientId && (
+                <div className="invalid-feedback d-block">
+                  Patient is required
+                </div>
+              )}
+
+            </div>
+            <div className="form-group col-lg-6">
+              <label>Doctor</label>
+              <Select
+                options={doctor}
+                onInputChange={handleDRSearch}
+                onChange={handleDoctorChange}
+                placeholder="Select Doctor"
+                isClearable
+              />
+              {validated && !formData.doctorId && (
+                <div className="invalid-feedback d-block">
+                  Doctor is required
+                </div>
+              )}
+            </div>
           </div>
-             <div className="form-group col-lg-6">
-            <label>Doctor</label>
-            <Select
-              options={doctor}
-              onInputChange={handleDRSearch}   
-              onChange={handleDoctorChange} 
-              placeholder="Select Doctor"
-              isClearable
-            />
-            {formData && !formData.patientId && (
-              <div className="invalid-feedback d-block">
-                Doctor is required
-              </div>
-            )}
-          </div>
-          </div>
-        
+
           <div className="row mb-3">
             <div className="form-group col-lg-6">
               <label htmlFor="inputPassword4">Is Live Consult</label>
@@ -210,8 +218,8 @@ const handleDRSearch = (inputValue) => {
                 <option value="" disabled>
                   Select Option
                 </option>
-                <option value="true">Yes</option>Doctor
-                <option value="false">No</option>
+                <option value={true}>Yes</option>
+                <option value={false}>No</option>
               </select>
               <div className="invalid-feedback">isLiveConsult is required</div>
             </div>
@@ -234,9 +242,9 @@ const handleDRSearch = (inputValue) => {
               <div className="invalid-feedback">Payment Mode is required</div>
             </div>
           </div>
-  
+
           <div className="row mb-3">
-              
+
 
             <div className="form-group col-lg-6">
               <label htmlFor="inputFName4">Appointment Date</label>
@@ -244,18 +252,18 @@ const handleDRSearch = (inputValue) => {
                 type="datetime-local"
                 className="form-control"
                 id="inputFName4"
-                name="dob"
+                name="date"
                 value={formData.date}
                 onChange={handleOnChange}
                 required
               />
               <div className="invalid-feedback">Date is required</div>
             </div>
-          
+
           </div>
 
-        
-      <div>
+
+          <div>
             <button
               type="submit"
               className="btn float-end"
