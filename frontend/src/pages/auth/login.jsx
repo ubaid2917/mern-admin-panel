@@ -37,12 +37,18 @@ function Login({ setToken }) {
           return setError(response?.message);
         }
         localStorage.setItem("token", response?.data?.token);
+        localStorage.setItem("user", JSON.stringify(response?.data?.user));
         setToken(response?.data?.token);
+        
         showToast("Login Successfully", "success");   
 
-        if(response) 
+        if(response?.data.user?.role === "doctor"){
+          navigate("/doctor/dashboard");
+        }else{
 
-        navigate("/dashboard");
+          navigate("/dashboard");
+        }
+
       } catch (error) {
         console.log("error", error);
         setMessage("Something went wrong");

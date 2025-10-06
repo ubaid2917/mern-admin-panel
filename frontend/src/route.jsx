@@ -26,6 +26,7 @@ const RoutesComp = () => {
       <Routes>
          
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
+         <Route path="/doctor/dashboard" element={<Dashboard />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="users">
           <Route path="list" element={<List />} />
