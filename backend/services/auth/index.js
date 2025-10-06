@@ -12,18 +12,22 @@ const login = asyncErrorHandler(async (req, res) => {
       where: { email: email },
     });
     if (!isExistUser) {
-      return error(res, "Invalid Credientials");
+      return error(res, "Invalid Credentials");
     }
     
     const isPassword = await bcrypt.compare(password, isExistUser.password);
 
     if(!isPassword){
-      return error(res, "Invalid Credientials");
+      return error(res, "Invalid Credentials");
     }
 
-     const token = generateToken(isExistUser);  
+     const token = generateToken(isExistUser);    
 
-     delete isExistUser.password
+     // convert instance to plain object 
+     const user = isExistUser.toJSON();
+
+
+     delete user.password
 
      const data = {
        user:isExistUser,
@@ -31,7 +35,7 @@ const login = asyncErrorHandler(async (req, res) => {
      }
       return res.status(STATUS_CODES.SUCCESS).json({
         success: true,
-        user: isExistUser,
+        user: user,
         token: token
       })
    
