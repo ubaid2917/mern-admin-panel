@@ -20,5 +20,10 @@ export const sidebarMenus = {
         { name: "Appointments", path: "/doctor/appointments" },
         { name: "Patients", path: "/doctor/patients" },
     ],
+    patient: [
+        { name: "Dashboard", path: "/patient/dashboard" },
+        { name: "Appointments", path: "/patient/appointments" },
+        { name: "Patients", path: "/patient/patients" },
+    ],
 };
 

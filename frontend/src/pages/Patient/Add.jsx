@@ -19,7 +19,7 @@ function AddPatient() {
     bloodGroup: "",
     martialStatus: "",
     dob: "",
-    file: "",
+    email: "",
     address: "",
   }); 
   const { showToast } = useToast();
@@ -44,7 +44,6 @@ function AddPatient() {
       }
 
       const payload = new FormData();
-      if (file) payload.append("file", file);
 
       payload.append("name", formData.name);
       payload.append("fatherName", formData.fatherName);
@@ -53,6 +52,7 @@ function AddPatient() {
       payload.append("bloodGroup", formData.bloodGroup);
       payload.append("martialStatus", formData.martialStatus);
       payload.append("dob", formData.dob);
+      payload.append("email", formData.email);
 
       const response = await addPatient(payload);
 
@@ -211,14 +211,16 @@ function AddPatient() {
             </div>
 
             <div className="form-group col-md-6">
-              <label htmlFor="inputPic">Profile Image</label>
+              <label htmlFor="inputPic">Email</label>
               <input
-                type="file"
+                type="email"
                 className="form-control"
                 id="inputPic"
-                name="file"
-                onChange={handleFileChange}
+                name="email"
+                onChange={handleOnChange}
+                required
               />
+              <div className="invalid-feedback">Email is required</div>
             </div>
           </div>
           <div className="row mb-3">
