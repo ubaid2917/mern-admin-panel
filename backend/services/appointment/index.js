@@ -110,7 +110,9 @@ const update = asyncErrorHandler(async (req, res) => {
 });
 
 const get = asyncErrorHandler(async (req, res) => {
-  //  await seed()
+  //  await seed()  
+
+  console.log('i am heree.....' )
 
   const { search } = req.query;
 
@@ -133,13 +135,15 @@ const get = asyncErrorHandler(async (req, res) => {
       {
         model: Doctor,
         as: "doctor",
-        attributes: ["id", "name", "phone"],
+        attributes: ["id", "name"]
       },
     ],
     order: [["created", "DESC"]],
     ...req.pagination,
     where: whereCondition,
-  });
+  });   
+
+  console.log('rows', rows)
 
   res.status(STATUS_CODES.SUCCESS).json({
     statusCode: 200,

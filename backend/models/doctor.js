@@ -66,6 +66,8 @@ class Doctor extends BaseModel {
   static associate(models) {
     // define association here
     Doctor.belongsTo(models.Department, { foreignKey: 'departmentId' , as: 'department' });
+    Doctor.hasMany(models.Appointment, { foreignKey: "doctorId", as: "appointments" });
+
   }
 }
 

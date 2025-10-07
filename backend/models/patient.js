@@ -40,6 +40,8 @@ class Patient extends BaseModel {
 
   static associate(models) {
      // relationship here 
+
+
   }
 }
 
