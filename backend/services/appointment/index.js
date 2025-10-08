@@ -111,9 +111,6 @@ const update = asyncErrorHandler(async (req, res) => {
 
 const get = asyncErrorHandler(async (req, res) => {
   //  await seed()  
-
-  console.log('i am heree.....' )
-
   const { search } = req.query;
 
   let whereCondition = {};
@@ -142,8 +139,6 @@ const get = asyncErrorHandler(async (req, res) => {
     ...req.pagination,
     where: whereCondition,
   });   
-
-  console.log('rows', rows)
 
   res.status(STATUS_CODES.SUCCESS).json({
     statusCode: 200,
