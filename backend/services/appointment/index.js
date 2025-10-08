@@ -3,7 +3,7 @@ const { TEXTS, STATUS_CODES } = require("../../config/constants");
 const { Doctor, Patient, Appointment, Department } = require("../../models");
 const { success, error } = require("../../utils/response");
 const { faker } = require("@faker-js/faker");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { createZoomMeeting } = require("../../utils/zoomService");
 const { sendEmail } = require("../../utils/mailService");
 
@@ -110,14 +110,20 @@ const update = asyncErrorHandler(async (req, res) => {
 });
 
 const get = asyncErrorHandler(async (req, res) => {
-  //  await seed()  
   const { search } = req.query;
 
   let whereCondition = {};
+  let patientWhereCondition = {};
+  let doctorWhereCondition = {};
 
-  if (search) {
-    whereCondition = {
-      [Op.or]: [{ name: { [Op.iLike]: `%${search}%` } }],
+  const hasSearch = !!search;
+
+  if (hasSearch) {
+    patientWhereCondition = {
+      name: { [Op.iLike]: `%${search}%` },
+    };
+    doctorWhereCondition = {
+      name: { [Op.iLike]: `%${search}%` },
     };
   }
 
@@ -128,19 +134,23 @@ const get = asyncErrorHandler(async (req, res) => {
         model: Patient,
         as: "patient",
         attributes: ["id", "name", "phone"],
+        where: patientWhereCondition,
+        required: hasSearch, // ✅ only INNER JOIN if searching
       },
       {
         model: Doctor,
         as: "doctor",
-        attributes: ["id", "name"]
+        attributes: ["id", "name"],
+        where: doctorWhereCondition,
+        required: hasSearch, // ✅ same here
       },
     ],
     order: [["created", "DESC"]],
     ...req.pagination,
     where: whereCondition,
-  });   
+  });
 
-  res.status(STATUS_CODES.SUCCESS).json({
+  res.status(200).json({
     statusCode: 200,
     message: TEXTS.FOUND,
     data: rows,
@@ -150,6 +160,7 @@ const get = asyncErrorHandler(async (req, res) => {
     pageCount: Math.ceil(count / req.pagination.limit),
   });
 });
+
 const getOne = asyncErrorHandler(async (req, res) => {
   const { id } = req.params;
   const data = await Appointment.findOne({

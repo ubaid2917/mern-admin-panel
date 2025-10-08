@@ -1,8 +1,6 @@
 import React from "react";
 
 const Table = ({ headers , data, renderRow }) => { 
-    console.log("headers", headers);
-    console.log("data in table", data);
   return (
     <div style={{ overflowY: "auto", maxHeight: "900px" }}>
       <table className="table table-hover text-center">

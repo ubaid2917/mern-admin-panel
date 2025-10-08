@@ -22,8 +22,6 @@ const AppointmentList = () => {
     }
   };  
 
-  console.log("data", data);
-
   const handleDeleteUser = async (id) => {
     try {
       const confirmDelete = window.confirm("Are you sure you want to delete this data?");
@@ -64,10 +62,11 @@ const AppointmentList = () => {
     "#",
     "Patient",
     "Fees",
-    "date",
-    "Blood Group",
-    "Phone",
-    "Dead",
+    "priority",
+    "payment",
+    "IsLiveConsult",
+    "Doctor",
+    "Date",
     "Created At",
     "Action",
   ];
@@ -76,12 +75,21 @@ const AppointmentList = () => {
   const renderRow = (data, index) => (
     <tr key={data.id} className="align-middle">
       <td>{index + 1}</td>
+      <td>{data.patient?.name || "N/A"}</td>
       <td>{data.fees || "N/A"}</td>
-      <td>{data.fatherName || "N/A"}</td>
-      <td>{data.gender || "N/A"}</td>
-      <td>{data.bloodGroup || "N/A"}</td>
-      <td>{data.phone || "N/A"}</td>
-      <td>{data.isDead ? "Yes" : "No"}</td>
+      <td>{data.priority || "N/A"}</td>
+      <td>{data.payment || "N/A"}</td>
+      <td>{data.IsLiveConsult || "N/A"}</td>
+      <td>{data.doctor?.name || "N/A"}</td>
+      <td>{new Date(data.date).toLocaleString("en-US", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        })}</td>
       <td>
         {new Date(data.created).toLocaleString("en-US", {
           day: "2-digit",
