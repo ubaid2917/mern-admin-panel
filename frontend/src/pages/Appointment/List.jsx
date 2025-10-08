@@ -13,14 +13,14 @@ const AppointmentList = () => {
 
   const getAppointmentList = async ({ page, limit }) => {
     try {
-      const response = await getList(search, limit, page);  
+      const response = await getList(search, limit, page, selectedOPD);
 
       if (response.status !== 200) return;
       setData(response?.data?.data);
     } catch (error) {
       alert("Something went wrong");
     }
-  };  
+  };
 
   const handleDeleteUser = async (id) => {
     try {
@@ -43,21 +43,26 @@ const AppointmentList = () => {
 
   const handleClick = (value) => setSelectedOPD(value);
 
-  // ✅ Initial load
+  //  Initial load
   useEffect(() => {
     getAppointmentList({ page: 1, limit: 50 });
   }, []);
 
-  // ✅ Search with debounce - triggers API call when search changes
+  // Search with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       getAppointmentList({ page: 1, limit: 50 });
-    }, 500); // Wait 500ms after user stops typing
+    }, 500);
 
-    return () => clearTimeout(timer); // Cleanup
-  }, [search]); // Runs whenever search state changes
+    return () => clearTimeout(timer);
+  }, [search]);
 
-  // ✅ define table headers
+  // Initial load
+  useEffect(() => {
+    getAppointmentList({ page: 1, limit: 50 });
+  }, [selectedOPD]);
+
+  //  define table headers
   const headers = [
     "#",
     "Patient",
@@ -71,7 +76,7 @@ const AppointmentList = () => {
     "Action",
   ];
 
-  // ✅ define how each row is rendered
+  //  define how each row is rendered
   const renderRow = (data, index) => (
     <tr key={data.id} className="align-middle">
       <td>{index + 1}</td>
@@ -82,14 +87,14 @@ const AppointmentList = () => {
       <td>{data.IsLiveConsult || "N/A"}</td>
       <td>{data.doctor?.name || "N/A"}</td>
       <td>{new Date(data.date).toLocaleString("en-US", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        })}</td>
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      })}</td>
       <td>
         {new Date(data.created).toLocaleString("en-US", {
           day: "2-digit",
@@ -128,12 +133,18 @@ const AppointmentList = () => {
   return (
     <>
       <Message message={message} />
-      <div className="mt-1">
+      <div className="">
         <div className="d-flex justify-content-between">
-          <h2 className="mb-4">Appointment List</h2>
-          <Link to="/appointments/add" className="btn" style={{ background: "#212529", color: "#fff" }}>
-            Add Appointment
-          </Link>
+          <div>
+
+            <h2 className="mb-4">Appointment List</h2>
+          </div>
+          <div>
+            <Link to="/appointments/add" className="btn" style={{ background: "#212529", color: "#fff" }}>
+              Add Appointment
+            </Link>
+          </div>
+
         </div>
 
         <div className="card shadow-sm">
@@ -141,7 +152,7 @@ const AppointmentList = () => {
             {/* Tabs + Search */}
             <div className="d-flex justify-content-between align-items-center">
               <div className="d-flex gap-3 align-items-center">
-                {["today", "coming", "old"].map((item) => (
+                {["today", "coming", "past"].map((item) => (
                   <button
                     key={item}
                     onClick={() => handleClick(item)}
@@ -157,8 +168,8 @@ const AppointmentList = () => {
                     {item === "today"
                       ? "Today OPD"
                       : item === "coming"
-                      ? "Coming OPD"
-                      : "Old OPD"}
+                        ? "Coming OPD"
+                        : "Old OPD"}
                   </button>
                 ))}
               </div>

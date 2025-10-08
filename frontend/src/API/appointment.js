@@ -1,10 +1,10 @@
 import { invokeApi } from "../utils/invokeApi";
 
 // get user
-export const getList = async (search, limit, page) => {
+export const getList = async (search, limit, page, selectedOPD) => {
   //  console.log('search')
   const reqObj = {
-    path: `/appointment/get?search=${search || ""}&limit=${limit}&page=${page}`,
+    path: `/appointment/get?search=${search || ""}&limit=${limit}&page=${page}&filter=${selectedOPD}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
