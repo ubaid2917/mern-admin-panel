@@ -9,16 +9,21 @@ const AppointmentList = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
-  const [selectedOPD, setSelectedOPD] = useState("today");
+  const [selectedOPD, setSelectedOPD] = useState("today"); 
+  const [loading, setLoading] = useState(false);
 
   const getAppointmentList = async ({ page, limit }) => {
     try {
+      setLoading(true);
       const response = await getList(search, limit, page, selectedOPD);
 
       if (response.status !== 200) return;
       setData(response?.data?.data);
     } catch (error) {
       alert("Something went wrong");
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -186,7 +191,7 @@ const AppointmentList = () => {
             </div>
 
             {/* ✅ Reusable Table */}
-            <Table headers={headers} data={data} renderRow={renderRow} />
+            <Table headers={headers} data={data} renderRow={renderRow}  loading={loading} />
 
             {/* Pagination */}
             <div style={{ bottom: "30px", backgroundColor: "#fff", width: "100%" }}>
