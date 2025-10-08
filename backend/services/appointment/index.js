@@ -3,7 +3,7 @@ const { TEXTS, STATUS_CODES } = require("../../config/constants");
 const { Doctor, Patient, Appointment, Department } = require("../../models");
 const { success, error } = require("../../utils/response");
 const { faker } = require("@faker-js/faker");
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const { createZoomMeeting } = require("../../utils/zoomService");
 const { sendEmail } = require("../../utils/mailService");
 
@@ -110,47 +110,61 @@ const update = asyncErrorHandler(async (req, res) => {
 });
 
 const get = asyncErrorHandler(async (req, res) => {
-  const { search } = req.query;
+  const { search, filter } = req.query;
 
-  let whereCondition = {};
+  // Only Patient filter when searching
   let patientWhereCondition = {};
-  let doctorWhereCondition = {};
+    // Appointment date filter
+    let appointmentWhereCondition = {};
 
-  const hasSearch = !!search;
-
-  if (hasSearch) {
+  if (search) {
     patientWhereCondition = {
-      name: { [Op.iLike]: `%${search}%` },
-    };
-    doctorWhereCondition = {
       name: { [Op.iLike]: `%${search}%` },
     };
   }
 
+    // Filter by appointment date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of day
+
+    if (filter === "today") {
+      appointmentWhereCondition.date = {
+        [Op.gte]: today,
+        [Op.lt]: new Date(today.getTime() + 24 * 60 * 60 * 1000),
+      };
+    } else if (filter === "past") {
+      appointmentWhereCondition.date = {
+        [Op.lt]: today,
+      };
+    } else if (filter === "coming") {
+      appointmentWhereCondition.date = {
+        [Op.gt]: today,
+      };
+    }
+
   const { count, rows } = await Appointment.findAndCountAll({
     attributes: { exclude: ["deleted", "patientId", "doctorId"] },
+    where: appointmentWhereCondition,
     include: [
       {
         model: Patient,
         as: "patient",
         attributes: ["id", "name", "phone"],
-        where: patientWhereCondition,
-        required: hasSearch, // ✅ only INNER JOIN if searching
+        where: patientWhereCondition, 
+        required: !!search,          
       },
       {
         model: Doctor,
         as: "doctor",
         attributes: ["id", "name"],
-        where: doctorWhereCondition,
-        required: hasSearch, // ✅ same here
+        required: false,              
       },
     ],
     order: [["created", "DESC"]],
     ...req.pagination,
-    where: whereCondition,
   });
 
-  res.status(200).json({
+  res.status(STATUS_CODES.SUCCESS).json({
     statusCode: 200,
     message: TEXTS.FOUND,
     data: rows,
