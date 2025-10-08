@@ -15,25 +15,23 @@ const Table = ({ headers, data, renderRow, loading }) => {
             ))}
           </tr>
         </thead>
-
-
         {
-          loading ? ( 
-              <SkeletonTable rows={10} columns={headers.length} />
-          ) : ( 
-          <>
-          <tbody>
-            {data && data.length > 0 ? (
-              data.map((item, index) => renderRow(item, index))
-            ) : (
-              <tr>
-                <td colSpan={headers.length} className="text-center text-muted">
-                  No data found
-                </td>
-              </tr>
-            )}
-          </tbody>
-          </>
+          loading ? (
+            <SkeletonTable rows={10} columns={headers.length} />
+          ) : (
+            <>
+              <tbody>
+                {data && data.length > 0 ? (
+                  data.map((item, index) => renderRow(item, index))
+                ) : (
+                  <tr>
+                    <td colSpan={headers.length} className="text-center text-muted">
+                      No data found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </>
           )
         }
 
