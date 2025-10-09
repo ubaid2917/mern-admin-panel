@@ -51,9 +51,10 @@ This is a comprehensive MERN stack Hospital Management project with backend (Nod
 ## Project Structure
 ```
 ├── backend/          # Node.js API server
-│   ├── controllers/  # Business logic
+│   ├── services/     # Business logic
+│   ├── controllers/  # CRUD endpoints
+│   ├── routes/       # All routes
 │   ├── models/       # Database models
-│   ├── routes/       # API routes
 │   └── middleware/   # Authentication & validation
 │
 └── frontend/         # React application
@@ -86,4 +87,4 @@ All endpoints are fully documented using Swagger. Access the interactive API doc
 MIT
 
 ## Author
-[ubaid2917](https://github.com/2917)
+[2917](https://github.com/2917)
