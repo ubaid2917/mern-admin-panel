@@ -87,4 +87,4 @@ All endpoints are fully documented using Swagger. Access the interactive API doc
 MIT
 
 ## Author
-[2917](https://github.com/2917)
+[ubaid2917](https://github.com/2917)
