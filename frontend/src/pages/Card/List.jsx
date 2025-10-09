@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { deleteRec, getList } from "../../API/appointment";
+import { deleteRec, getList } from "../../API/card";
 import Message from "../../components/Message";
 import Pagination from "../../components/Pagination";
 import Table from "../../components/Table";
 
-const AppointmentList = () => {
+const getCardList = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
-  const [selectedOPD, setSelectedOPD] = useState("today"); 
   const [loading, setLoading] = useState(false);
 
-  const getAppointmentList = async ({ page, limit }) => {
+  const getCardList = async ({ page, limit }) => {
     try {
       setLoading(true);
-      const response = await getList(search, limit, page, selectedOPD);
+      const response = await getList(search, limit, page);
 
       if (response.status !== 200) return;
       setData(response?.data?.data);
@@ -34,7 +33,7 @@ const AppointmentList = () => {
         const response = await deleteRec(id);
         if (response.data.success !== false) {
           setMessage("Record Deleted Successfully");
-          getAppointmentList({ page: 1, limit: 50 });
+          getCardList({ page: 1, limit: 50 });
         }
       }
     } catch (error) {
@@ -50,33 +49,29 @@ const AppointmentList = () => {
 
   //  Initial load
   useEffect(() => {
-    getAppointmentList({ page: 1, limit: 50 });
+    getCardList({ page: 1, limit: 50 });
   }, []);
 
   // Search with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
-      getAppointmentList({ page: 1, limit: 50 });
+      getCardList({ page: 1, limit: 50 });
     }, 500);
 
     return () => clearTimeout(timer);
   }, [search]);
 
-  // Initial load
-  useEffect(() => {
-    getAppointmentList({ page: 1, limit: 50 });
-  }, [selectedOPD]);
+
 
   //  define table headers
   const headers = [
     "#",
-    "Patient",
-    "Fees",
-    "priority",
-    "payment",
-    "IsLiveConsult",
-    "Doctor",
-    "Date",
+    "name",
+    "minVisits",
+    "discount %",
+    "type",
+    "validity",
+    "description",
     "Created At",
     "Action",
   ];
@@ -85,21 +80,13 @@ const AppointmentList = () => {
   const renderRow = (data, index) => (
     <tr key={data.id} className="align-middle">
       <td>{index + 1}</td>
-      <td>{data.patient?.name || "N/A"}</td>
-      <td>{data.fees || "N/A"}</td>
-      <td>{data.priority || "N/A"}</td>
-      <td>{data.payment || "N/A"}</td>
-      <td>{data.IsLiveConsult || "N/A"}</td>
-      <td>{data.doctor?.name || "N/A"}</td>
-      <td>{new Date(data.date).toLocaleString("en-US", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-      })}</td>
+      <td>{data.name || "N/A"}</td>
+      <td>{data.minVisits || "N/A"}</td>
+      <td>{data.discount || "N/A"}</td>
+      <td>{data.type || "N/A"}</td>
+      <td>{data.validity || "N/A"}</td>
+      <td>{data.description || "N/A"}</td>
+
       <td>
         {new Date(data.created).toLocaleString("en-US", {
           day: "2-digit",
@@ -142,11 +129,11 @@ const AppointmentList = () => {
         <div className="d-flex justify-content-between">
           <div>
 
-            <h2 className="mb-4">Appointment List</h2>
+            <h2 className="mb-4">Card List</h2>
           </div>
           <div>
-            <Link to="/appointments/add" className="btn" style={{ background: "#212529", color: "#fff" }}>
-              Add Appointment
+            <Link to="/cards/add" className="btn" style={{ background: "#212529", color: "#fff" }}>
+              Add Card
             </Link>
           </div>
 
@@ -155,31 +142,8 @@ const AppointmentList = () => {
         <div className="card shadow-sm">
           <div className="card-body">
             {/* Tabs + Search */}
-            <div className="d-flex justify-content-between align-items-center">
-              <div className="d-flex gap-3 align-items-center">
-                {["today", "coming", "past"].map((item) => (
-                  <button
-                    key={item}
-                    onClick={() => handleClick(item)}
-                    className="btn btn-link px-3"
-                    style={{
-                      textDecoration: "none",
-                      fontSize: "20px",
-                      color: selectedOPD === item ? "#000" : "#555",
-                      borderBottom: selectedOPD === item ? "2px solid #000" : "2px solid transparent",
-                      borderRadius: 0,
-                    }}
-                  >
-                    {item === "today"
-                      ? "Today OPD"
-                      : item === "coming"
-                        ? "Coming OPD"
-                        : "Old OPD"}
-                  </button>
-                ))}
-              </div>
-
-              <div className="mb-4" style={{ width: "300px" }}>
+            <div style={{ marginBottom: "40px" }}>
+              <div className="mb-3" style={{ width: "300px", float: "right"  }}>
                 <input
                   type="search"
                   className="form-control"
@@ -187,15 +151,17 @@ const AppointmentList = () => {
                   onChange={handleSearch}
                   placeholder="Search"
                 />
-              </div>
-            </div>
+              </div>  
+            </div> 
+  <br />
+
 
             {/* ✅ Reusable Table */}
-            <Table headers={headers} data={data} renderRow={renderRow}  loading={loading} />
+            <Table headers={headers} data={data} renderRow={renderRow} loading={loading} />
 
             {/* Pagination */}
             <div style={{ bottom: "30px", backgroundColor: "#fff", width: "100%" }}>
-              <Pagination onChange={getAppointmentList} />
+              <Pagination onChange={getCardList} />
             </div>
           </div>
         </div>
@@ -204,4 +170,4 @@ const AppointmentList = () => {
   );
 };
 
-export default AppointmentList;
+export default getCardList;
