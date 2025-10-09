@@ -1,48 +1,76 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { getOneRec, updateOneRec } from "../../API/patients";
+import { useToast } from "../../components/ToastProvider";
+import { getOneRec, updateOneRec } from "../../../src/API/card";
 
-function AddPatient() {
+function EditCard() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const { id } = useParams();
 
   const [validated, setValidated] = useState(false);
-  const [message, setMessage] = useState("");
-  const [variant, setVariant] = useState("success");
-  const [data, setData] = useState({});
+  const [formData, setFormData] = useState({
+    name: "",
+    minVisits: "",
+    discount: "",
+    type: "",
+    validity: "",
+    description: "",
+  });
   const [originalData, setOriginalData] = useState({});
-  const [file, setFile] = useState(null);
 
+  // Card types
+  const cardTypes = [
+    { value: "Platinum", label: "Platinum" },
+    { value: "Silver", label: "Silver" },
+    { value: "Gold", label: "Gold" },
+    { value: "Diamond", label: "Diamond" },
+    { value: "VIP", label: "VIP" },
+  ];
+
+  // Validity options (in months)
+  const validityOptions = [
+    { value: "1", label: "1 Month" },
+    { value: "3", label: "3 Months" },
+    { value: "6", label: "6 Months" },
+    { value: "9", label: "9 Months" },
+    { value: "12", label: "12 Months" },
+  ];
+
+  // ✅ Fetch card data on component mount
   useEffect(() => {
-    getUser();
+    getCard();
   }, []);
 
-  const getUser = async () => {
+  const getCard = async () => {
     try {
       const response = await getOneRec(id);
-      setData(response?.data?.data || {});
-      setOriginalData(response?.data?.data || {});
+      const cardData = response?.data?.data || {};
+      setFormData({
+        name: cardData.name || "",
+        minVisits: cardData.minVisits || "",
+        discount: cardData.discount || "",
+        type: cardData.type || "",
+        validity: cardData.validity || "",
+        description: cardData.description || "",
+      });
+      setOriginalData(cardData);
     } catch (error) {
-      console.error("Error fetching user:", error);
+      showToast("Error fetching card data", "error");
+      console.error("Error fetching card:", error);
     }
   };
 
-  // shallow comparison 
+  // ✅ Check if data has changed
   const isEqual = (obj1, obj2) => {
     return JSON.stringify(obj1) === JSON.stringify(obj2);
-  }
+  };
 
-
-
+  // handle form change
   const handleOnChange = (event) => {
     const { name, value } = event.target;
-    setData((prev) => ({ ...prev, [name]: value }));
+    setFormData({ ...formData, [name]: value });
   };
-
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
-
 
   // handle submit
   const handleSubmit = async (event) => {
@@ -55,239 +83,179 @@ function AddPatient() {
         return;
       }
 
-      // handle if no change
-      if (isEqual(data, originalData)) {
-        setMessage("You have not made any changes");
-        setVariant("warning");  
-        return
+      // ✅ Check if no changes made
+      const currentData = {
+        name: formData.name,
+        minVisits: Number(formData.minVisits),
+        discount: Number(formData.discount),
+        type: formData.type,
+        validity: Number(formData.validity),
+        description: formData.description,
+      };
+
+      if (isEqual(currentData, originalData)) {
+        showToast("You have not made any changes", "warning");
+        return;
       }
 
-      const payload = new FormData();
-      payload.append("name", data.name || "");
-      payload.append("fatherName", data.fatherName || "");
-      payload.append("gender", data.gender || "");
-      payload.append("phone", data.phone || "");
-      payload.append("bloodGroup", data.bloodGroup || "");
-      payload.append("martialStatus", data.martialStatus || "");
-      payload.append("dob", data.dob || "");
-      payload.append("address", data.address || "");
-      payload.append("isDead", data.isDead || "");
-      if (file) {
-        payload.append("file", file);
-      }
+      const payload = {
+        name: formData.name,
+        minVisits: Number(formData.minVisits),
+        discount: Number(formData.discount),
+        type: formData.type,
+        validity: Number(formData.validity),
+        description: formData.description,
+      };
+
+      console.log("payload", payload);
 
       const response = await updateOneRec(id, payload);
 
-      if (response?.data?.success === false) {
-        setMessage(response?.data?.message || "Failed to update patient");
-        setVariant("danger");
+      if (response?.data?.success === true) {
+        showToast(response?.data?.message || "Card updated successfully", "success");
+        navigate("/cards/list");
       } else {
-        setMessage(response?.data?.message || "Patient updated successfully");
-        setVariant("success");
-
-        setTimeout(() => {
-          navigate("/patients/list");
-        }, 2000);
+        showToast(response?.message || response?.data?.message || "Failed to update card", "error");
       }
     } catch (error) {
-      console.error(error);
-      setMessage("Something went wrong");
-      setVariant("danger");
+      showToast(error.message || "Something went wrong", "error");
     }
   };
 
   return (
-    <div className="d-flex justify-content-center">
-      <form
-        noValidate
-        className={`needs-validation card p-4 ${validated ? "was-validated" : ""}`}
-        style={{ width: "1000px" }}
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-      >
-        <h3 className="mb-4">Edit Patient</h3>
-        {message && (
-          <div className={`alert alert-${variant} h6`} role="alert">
-            {message}
-          </div>
-        )}
+    <>
+      <div className="d-flex justify-content-center">
+        <form
+          noValidate
+          className={`needs-validation card p-4 ${
+            validated ? "was-validated" : ""
+          }`}
+          style={{ width: "1000px" }}
+          onSubmit={handleSubmit}
+        >
+          <h3 className="mb-4">Edit Smart Card</h3>
 
-        {/* Name & Father Name */}
-        <div className="row mb-3">
-          <div className="form-group col-lg-6">
-            <label htmlFor="inputFname1">Name</label>
-            <input
-              type="text"
-              className="form-control"
-              id="inputFname1"
-              name="name"
-              value={data.name || ""}
-              onChange={handleOnChange}
-              required
-            />
-            <div className="invalid-feedback">Name is required</div>
-          </div>
+          <div className="row mb-3">
+            <div className="form-group col-lg-6">
+              <label htmlFor="name">Card Name</label>
+              <input
+                type="text"
+                className="form-control"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleOnChange}
+                placeholder="Enter card name"
+                required
+              />
+              <div className="invalid-feedback">Card name is required</div>
+            </div>
 
-          <div className="form-group col-lg-6">
-            <label htmlFor="inputFName4">Father Name</label>
-            <input
-              type="text"
-              className="form-control"
-              id="inputFName4"
-              name="fatherName"
-              value={data.fatherName || ""}
-              onChange={handleOnChange}
-              required
-            />
-            <div className="invalid-feedback">Father Name is required</div>
-          </div>
-        </div>
-
-        {/* Phone & Gender */}
-        <div className="row mb-3">
-          <div className="form-group col-lg-6">
-            <label htmlFor="inputPhone4">Phone</label>
-            <input
-              type="number"
-              className="form-control"
-              id="inputPhone4"
-              name="phone"
-              value={data.phone || ""}
-              onChange={handleOnChange}
-              required
-            />
-            <div className="invalid-feedback">Phone is required</div>
+            <div className="form-group col-lg-6">
+              <label htmlFor="type">Card Type</label>
+              <select
+                name="type"
+                className="form-control"
+                value={formData.type}
+                onChange={handleOnChange}
+                required
+              >
+                <option value="" disabled>
+                  Select Card Type
+                </option>
+                {cardTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+              <div className="invalid-feedback">Card type is required</div>
+            </div>
           </div>
 
-          <div className="form-group col-lg-6">
-            <label htmlFor="inputGender">Gender</label>
-            <select
-              name="gender"
-              id="inputGender"
-              className="form-control"
-              value={data.gender || ""}
-              onChange={handleOnChange}
-              required
+          <div className="row mb-3">
+            <div className="form-group col-lg-6">
+              <label htmlFor="minVisits">Minimum Visits</label>
+              <input
+                type="number"
+                className="form-control"
+                id="minVisits"
+                name="minVisits"
+                value={formData.minVisits}
+                onChange={handleOnChange}
+                placeholder="Enter minimum visits"
+                min="1"
+                required
+              />
+              <div className="invalid-feedback">Minimum visits is required</div>
+            </div>
+
+            <div className="form-group col-lg-6">
+              <label htmlFor="discount">Discount (%)</label>
+              <input
+                type="number"
+                className="form-control"
+                id="discount"
+                name="discount"
+                value={formData.discount}
+                onChange={handleOnChange}
+                placeholder="Enter discount percentage"
+                min="0"
+                max="100"
+                required
+              />
+              <div className="invalid-feedback">Discount is required</div>
+            </div>
+          </div>
+
+          <div className="row mb-3">
+            <div className="form-group col-lg-6">
+              <label htmlFor="validity">Validity (Months)</label>
+              <select
+                name="validity"
+                className="form-control"
+                value={formData.validity}
+                onChange={handleOnChange}
+                required
+              >
+                <option value="" disabled>
+                  Select Validity
+                </option>
+                {validityOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <div className="invalid-feedback">Validity is required</div>
+            </div>
+
+            <div className="form-group col-lg-6">
+              <label htmlFor="description">Description</label>
+              <input
+                className="form-control"
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleOnChange}
+                placeholder="Enter card description"
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              className="btn float-end"
+              style={{ background: "#212529", color: "#fff" }}
             >
-              <option value="" disabled>Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-            <div className="invalid-feedback">Gender is required</div>
+              Update
+            </button>
           </div>
-        </div>
-
-        {/* Blood Group & DOB */}
-        <div className="row mb-3">
-          <div className="form-group col-lg-6">
-            <label htmlFor="inputBloodGroup">Blood Group</label>
-            <select
-              id="inputBloodGroup"
-              name="bloodGroup"
-              className="form-control"
-              value={data.bloodGroup || ""}
-              onChange={handleOnChange}
-              required
-            >
-              <option value="" disabled>Select Blood Group</option>
-              <option value="A+">A+</option>
-              <option value="A-">A-</option>
-              <option value="B+">B+</option>
-              <option value="B-">B-</option>
-              <option value="O+">O+</option>
-              <option value="O-">O-</option>
-              <option value="AB+">AB+</option>
-              <option value="AB-">AB-</option>
-            </select>
-            <div className="invalid-feedback">Please select a Blood Group</div>
-          </div>
-
-          <div className="form-group col-md-6">
-            <label htmlFor="inputDob">Date of Birth</label>
-            <input
-              type="date"
-              className="form-control"
-              id="inputDob"
-              name="dob"
-              value={data.dob ? data.dob.substring(0, 10) : ""}
-              onChange={handleOnChange}
-              required
-            />
-            <div className="invalid-feedback">Date of Birth is required</div>
-          </div>
-        </div>
-
-        {/* Marital Status */}
-        <div className="row mb-3">
-          <div className="form-group col-lg-6">
-            <label htmlFor="inputMaritalStatus">Marital Status</label>
-            <select
-              name="martialStatus"
-              id="inputMaritalStatus"
-              className="form-control"
-              value={data.martialStatus || ""}
-              onChange={handleOnChange}
-              required
-            >
-              <option value="" disabled>Select Status</option>
-              <option value="married">Married</option>
-              <option value="single">Single</option>
-            </select>
-            <div className="invalid-feedback">Marital Status is required</div>
-          </div>
-          <div className="form-group col-lg-6">
-            <label htmlFor="inputMaritalStatus">Is Dead</label>
-            <select
-              name="isDead"
-              id="inputMaritalStatus"
-              className="form-control"
-              value={data.isDead === true ? "yes" : data.isDead === false ? "no" : ""}
-              onChange={(e) =>
-                handleOnChange({
-                  target: {
-                    name: "isDead",
-                    value: e.target.value === "yes", // "yes" => true, "no" => false
-                  },
-                })
-              }
-              required
-            >
-              <option value="" disabled>Select Status</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
-          </div>
-
-        </div>
-
-        {/* Address */}
-        <div className="row mb-3">
-          <div className="form-group col-lg-12">
-            <label htmlFor="inputAddress">Address</label>
-            <textarea
-              name="address"
-              id="inputAddress"
-              className="form-control"
-              value={data.address || ""}
-              onChange={handleOnChange}
-            ></textarea>
-          </div>
-        </div>
-
-
-        {/* Submit */}
-        <div>
-          <button
-            type="submit"
-            className="btn float-end"
-            style={{ background: "#212529", color: "#fff" }}
-          >
-            Update
-          </button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </>
   );
 }
 
-export default AddPatient;
+export default EditCard;

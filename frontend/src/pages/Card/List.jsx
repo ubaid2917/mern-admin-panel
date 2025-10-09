@@ -105,7 +105,7 @@ const getCardList = () => {
           </button>
         ) : (
           <Link
-            to={`/patients/edit/${data.id}`}
+            to={`/cards/edit/${data.id}`}
             className="btn btn-sm"
             style={{ background: "#212529", color: "#fff" }}
           >
