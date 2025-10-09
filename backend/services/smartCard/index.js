@@ -10,8 +10,8 @@ const create = asyncErrorHandler(async (req, res) => {
     const { name } = req.body;
 
     // Check SmartCard already exist
-    const isExistPhone = await SmartCard.findOne({ where: { name } });
-    if (isExistPhone) {
+    const isExistCard = await SmartCard.findOne({ where: { type } });
+    if (isExistCard) {
       return error(res, "SmartCard already exist");
     }
 
