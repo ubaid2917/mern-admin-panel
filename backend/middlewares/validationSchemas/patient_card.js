@@ -10,10 +10,9 @@ const create = Joi.object({
     'string.guid': 'Patient ID must be a valid UUID',
     'any.required': 'Patient ID is required'
   }),
-  discount: Joi.number().min(0).max(100).required().messages({
+  discount: Joi.number().min(0).max(100).messages({
     'number.min': 'Discount cannot be negative',
     'number.max': 'Discount cannot exceed 100%',
-    'any.required': 'Discount is required'
   }),
   expiredAt: Joi.date().greater('now').optional().messages({
     'date.greater': 'Expiry date must be in the future'

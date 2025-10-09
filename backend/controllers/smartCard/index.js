@@ -15,10 +15,7 @@ router.patch("/update/:id", cardService.update);
 router.delete("/delete/:id", cardService.del);
 
 
-router.post("/add", validate(validationSchemas.patient), cardService.create);
-router.get("/get", cardService.get);
-router.get("/get/:id", cardService.getOne)
-router.patch("/update/:id", cardService.update);
-router.delete("/delete/:id", cardService.del);
+router.post("/assign", validate(validationSchemas.patientCard), cardService.assign);
+
 
 module.exports = router;
