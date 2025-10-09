@@ -7,7 +7,7 @@ const { Op } = require("sequelize");
 
 const create = asyncErrorHandler(async (req, res) => {
   try {
-    const { name } = req.body;
+    const { type } = req.body;
 
     // Check SmartCard already exist
     const isExistCard = await SmartCard.findOne({ where: { type } });
