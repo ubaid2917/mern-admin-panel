@@ -7,6 +7,9 @@ import AddUser from "./pages/User/Add";
 import PatientList from "./pages/Patient/List";
 import AddPatient from "./pages/Patient/Add";
 import EditPatient from "./pages/Patient/Edit";
+import CardList from "./pages/Card/List";
+import AddCard from "./pages/Card/Add";
+import EditCard from "./pages/Card/Edit";
 import Catgory from "./pages/Category/List";
 import AppointmentList from "./pages/Appointment/List";
 import AddAppointment from "./pages/Appointment/Add";
@@ -34,6 +37,11 @@ const RoutesComp = () => {
           {/* <Route path="edit/:id" element={<EditUser />} /> */}
         </Route>
 
+        <Route path="cards">
+          <Route path="list" element={<CardList />} />
+          <Route path="add" element={<AddCard />} />
+          <Route path="edit/:id" element={<EditCard />} />
+        </Route>
         <Route path="patients">
           <Route path="list" element={<PatientList />} />
           <Route path="add" element={<AddPatient />} />

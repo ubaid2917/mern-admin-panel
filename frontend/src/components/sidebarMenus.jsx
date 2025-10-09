@@ -4,6 +4,7 @@ export const sidebarMenus = {
         { name: "Dashboard", path: "/dashboard" },
         { name: "User", path: "/users/list" },
         { name: "Patients", path: "/patients/list" },
+        { name: "Smart Card", path: "/cards/list" },
         { name: "Appointment", path: "/appointments/list" },
         { name: "Category", path: "/category" },
         {
