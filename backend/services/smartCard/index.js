@@ -174,11 +174,53 @@ const assign = asyncErrorHandler(async (req, res) => {
   }
 });
 
+const assignList = asyncErrorHandler(async (req, res) => {
+ 
+   const { search } = req.query;
+
+  let whereCondition = {};
+
+  if (search) {
+    whereCondition = {
+      [Op.or]: [{ name: { [Op.iLike]: `%${search}%` } }],
+    };
+  }
+
+  const { count, rows } = await PatientCard.findAndCountAll({
+    include: [
+      {
+        model: Patient,
+        as: "patient",
+        attributes: ["id", "name", "phone"],
+      },
+      {
+        model: SmartCard,
+        as: "card",
+        attributes: ["id", "name", "type"],
+      },
+    ],
+    order: [["created", "DESC"]],
+    ...req.pagination,
+    where: whereCondition,
+  });
+
+  res.status(STATUS_CODES.SUCCESS).json({
+    statusCode: 200,
+    message: TEXTS.FOUND,
+    data: rows,
+    count,
+    limit: req.pagination.limit,
+    page: req.pagination.offset / req.pagination.limit + 1,
+    pageCount: Math.ceil(count / req.pagination.limit),
+  });
+});
+
 module.exports = {
   create,
   update,
   get,
   getOne,
   del,
-  assign
+  assign,
+  assignList
 };

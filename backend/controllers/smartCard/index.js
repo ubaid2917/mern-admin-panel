@@ -16,6 +16,7 @@ router.delete("/delete/:id", cardService.del);
 
 
 router.post("/assign", validate(validationSchemas.patientCard), cardService.assign);
+router.get("/assign-list", cardService.assignList);
 
 
 module.exports = router;
