@@ -6,7 +6,15 @@ const routes = require("./routes");
 const { authenticateRoutes } = require("./config/unlessRoutes");
 const { authenticate } = require("./middlewares/auth.middleware");
 
+
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swaggerConfig');
+
 const app = express();
+
+
+// Swagger API docs route
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/test", (req, res) => {
   console.log("✅ I am here");
