@@ -3,7 +3,7 @@ const { TEXTS, STATUS_CODES } = require("../../config/constants");
 const { SmartCard, Patient, PatientCard } = require("../../models");
 const { success, error } = require("../../utils/response");
 const { faker } = require("@faker-js/faker");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 const create = asyncErrorHandler(async (req, res) => {
   try {
@@ -192,7 +192,8 @@ const assignList = asyncErrorHandler(async (req, res) => {
       {
         model: Patient,
         as: "patient",
-        attributes: ["id", "name", "phone"],
+        attributes: ["id", "name", "phone"], 
+        where: whereCondition,
       },
       {
         model: SmartCard,
@@ -202,7 +203,6 @@ const assignList = asyncErrorHandler(async (req, res) => {
     ],
     order: [["created", "DESC"]],
     ...req.pagination,
-    where: whereCondition,
   });
 
   res.status(STATUS_CODES.SUCCESS).json({
