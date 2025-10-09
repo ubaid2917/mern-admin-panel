@@ -1,123 +1,45 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import Message from "../../components/Message";
-import App from "../../App";
-import {  getList } from "../../../src/API/doctor";
-import {  addRecord } from "../../../src/API/appointment";
-import { getPatientList } from "../../../src/API/patients";
 import { useToast } from "../../components/ToastProvider";
-import Select from "react-select";
-function AddAppointment() {
+import { addRecord } from "../../../src/API/card"; 
+
+function AddCard() {
   const navigate = useNavigate();
   const { showToast } = useToast();
 
   const [validated, setValidated] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  const [message, setMessage] = useState("");
-  const [variant, setVariant] = useState("success");
-  const [patient, setPatient] = useState([]);
-  const [doctor, setDoctor] = useState([]);
-  const [search, setSearch] = useState('');
-  const [searchDr, setSearchDr] = useState('');
   const [formData, setFormData] = useState({
-    date: "",
-    payment: "",
-    isLiveConsult: "",
-    doctorId: "",
-    patientId: "",
-
+    name: "",
+    minVisits: "",
+    discount: "",
+    type: "",
+    validity: "",
+    description: "",
   });
 
+  //  Card types
+  const cardTypes = [
+    { value: "Platinum", label: "Platinum" },
+    { value: "Silver", label: "Silver" },
+    { value: "Gold", label: "Gold" },
+    { value: "Diamond", label: "Diamond" },
+    { value: "VIP", label: "VIP" },
+  ];
 
-  // get department    
-  const getPatient = async (searchValue = '') => {
-    try {
-      const response = await getPatientList(searchValue, 10, 1);
-      if (response.status !== 200) return;
-      const options = response?.data?.data?.map((item) => ({
-        value: item.id,
-        label: item.name,
-      }));
-
-      console.log('option', options)
-      setPatient(options);
-
-    } catch (error) {
-      showToast(error, "error");
-    }
-  };
-
-  // search
-  useEffect(() => {
-    getPatient();
-  }, []);
-
-  const handleSearch = (inputValue) => {
-    if (inputValue.length > 0) {
-      getPatient(inputValue); // search patients
-    }
-  };
+  // Validity options (in months)
+  const validityOptions = [
+    { value: "1", label: "1 Month" },
+    { value: "3", label: "3 Months" },
+    { value: "6", label: "6 Months" },
+    { value: "9", label: "9 Months" },
+    { value: "12", label: "12 Months" },
+  ];
 
   // handle form change
   const handleOnChange = (event) => {
     const { name, value } = event.target;
-  //   let finalValue = value;  
-
-   
-  // if (name === "isLiveConsult") {
-  //   finalValue = value === "true"; // true or false (boolean)
-  // } 
-
     setFormData({ ...formData, [name]: value });
   };
-
-  // ✅ handle dropdown change
-  const handlePatientChange = (selectedOption) => {
-    setFormData({ ...formData, patientId: selectedOption?.value || "" });
-  };
-
-
-  // get doctor 
-  // get department    
-  const getDoctor = async (searchValue = '') => {
-    try {
-      const response = await getList(searchValue, 10, 1);
-      if (response.status !== 200) return;
-      const options = response?.data?.data?.map((item) => ({
-        value: item.id,
-        label: item.name,
-      }));
-
-      console.log('option', options)
-      setDoctor(options);
-
-    } catch (error) {
-      showToast(error, "error");
-    }
-  };
-
-  // search
-  useEffect(() => {
-    getDoctor();
-  }, []);
-
-  const handleDRSearch = (inputValue) => {
-    if (inputValue.length > 0) {
-      getDoctor(inputValue); // search patients
-    }
-  };
-
-  // handle form change
-  const handleDrOnChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  // ✅ handle dropdown change
-  const handleDoctorChange = (selectedOption) => {
-    setFormData({ ...formData, doctorId: selectedOption?.value || "" });
-  };
-
 
   // handle submit
   const handleSubmit = async (event) => {
@@ -130,23 +52,22 @@ function AddAppointment() {
         return;
       }
 
-      const payload = new FormData();
+      const payload = {
+        name: formData.name,
+        minVisits: Number(formData.minVisits),
+        discount: Number(formData.discount),
+        type: formData.type,
+        validity: Number(formData.validity),
+        description: formData.description,
+      };
 
-      payload.append("date", formData.date);
-      payload.append("payment", formData.payment);
-      payload.append("isLiveConsult", formData.isLiveConsult);
- 
-      payload.append("doctorId", formData.doctorId);
-      payload.append("patientId", formData.patientId);
-    
-      console.log('payload', payload.isLiveConsult)
+      console.log("payload", payload);
 
-      const response = await addRecord(payload);
+      const response = await addRecord(payload); 
 
       if (response?.data?.success === true) {
         showToast(response?.data?.message, "success");
-
-        navigate("/appointments/list");
+        navigate("/cards/list"); 
       } else {
         showToast(response?.message || response?.data?.message, "error");
       }
@@ -160,108 +81,122 @@ function AddAppointment() {
       <div className="d-flex justify-content-center">
         <form
           noValidate
-          className={`needs-validation card p-4 ${validated ? "was-validated" : ""
-            }`}
+          className={`needs-validation card p-4 ${
+            validated ? "was-validated" : ""
+          }`}
           style={{ width: "1000px" }}
           onSubmit={handleSubmit}
         >
-          <h3 className="mb-4">Add Appointment</h3>
-          {message && (
-            <div className={`alert alert-${variant} h6`} role="alert">
-              {message}
-            </div>
-          )}
-          <div className="row mb-3">
-            <div className="form-group col-lg-6">
-              <label>Patient</label>
-              <Select
-                options={patient}
-                onInputChange={handleSearch}
-                onChange={handlePatientChange}
-                placeholder="Select Patient"
-                isClearable
-              />
-              {validated && !formData.patientId && (
-                <div className="invalid-feedback d-block">
-                  Patient is required
-                </div>
-              )}
-
-            </div>
-            <div className="form-group col-lg-6">
-              <label>Doctor</label>
-              <Select
-                options={doctor}
-                onInputChange={handleDRSearch}
-                onChange={handleDoctorChange}
-                placeholder="Select Doctor"
-                isClearable
-              />
-              {validated && !formData.doctorId && (
-                <div className="invalid-feedback d-block">
-                  Doctor is required
-                </div>
-              )}
-            </div>
-          </div>
+          <h3 className="mb-4">Add Smart Card</h3>
 
           <div className="row mb-3">
             <div className="form-group col-lg-6">
-              <label htmlFor="inputPassword4">Is Live Consult</label>
-              <select
-                name="isLiveConsult"
-                className="form-control"
-                value={formData.isLiveConsult}
-                onChange={handleOnChange}
-                required
-              >
-                <option value="" disabled>
-                  Select Option
-                </option>
-                <option value={true}>Yes</option>
-                <option value={false}>No</option>
-              </select>
-              <div className="invalid-feedback">isLiveConsult is required</div>
-            </div>
-            <div className="form-group col-lg-6">
-              <label htmlFor="inputPassword4">Payment Mode</label>
-              <select
-                name="payment"
-                className="form-control"
-                value={formData.payment}
-                onChange={handleOnChange}
-                required
-              >
-                <option value="" disabled>
-                  Select Payment Option
-                </option>
-                <option value="cash">Cash</option>
-                <option value="check">Cheque</option>
-                <option value="online">online</option>
-              </select>
-              <div className="invalid-feedback">Payment Mode is required</div>
-            </div>
-          </div>
-
-          <div className="row mb-3">
-
-
-            <div className="form-group col-lg-6">
-              <label htmlFor="inputFName4">Appointment Date</label>
+              <label htmlFor="name">Card Name</label>
               <input
-                type="datetime-local"
+                type="text"
                 className="form-control"
-                id="inputFName4"
-                name="date"
-                value={formData.date}
+                id="name"
+                name="name"
+                value={formData.name}
                 onChange={handleOnChange}
+                placeholder="Enter card name"
                 required
               />
-              <div className="invalid-feedback">Date is required</div>
+              <div className="invalid-feedback">Card name is required</div>
             </div>
 
+            <div className="form-group col-lg-6">
+              <label htmlFor="type">Card Type</label>
+              <select
+                name="type"
+                className="form-control"
+                value={formData.type}
+                onChange={handleOnChange}
+                required
+              >
+                <option value="" disabled>
+                  Select Card Type
+                </option>
+                {cardTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+              <div className="invalid-feedback">Card type is required</div>
+            </div>
           </div>
 
+          <div className="row mb-3">
+            <div className="form-group col-lg-6">
+              <label htmlFor="minVisits">Minimum Visits</label>
+              <input
+                type="number"
+                className="form-control"
+                id="minVisits"
+                name="minVisits"
+                value={formData.minVisits}
+                onChange={handleOnChange}
+                placeholder="Enter minimum visits"
+                min="1"
+                required
+              />
+              <div className="invalid-feedback">Minimum visits is required</div>
+            </div>
+
+            <div className="form-group col-lg-6">
+              <label htmlFor="discount">Discount (%)</label>
+              <input
+                type="number"
+                className="form-control"
+                id="discount"
+                name="discount"
+                value={formData.discount}
+                onChange={handleOnChange}
+                placeholder="Enter discount percentage"
+                min="0"
+                max="100"
+                required
+              />
+              <div className="invalid-feedback">Discount is required</div>
+            </div>
+          </div>
+
+          <div className="row mb-3">
+            <div className="form-group col-lg-6">
+              <label htmlFor="validity">Validity (Months)</label>
+              <select
+                name="validity"
+                className="form-control"
+                value={formData.validity}
+                onChange={handleOnChange}
+                required
+              >
+                <option value="" disabled>
+                  Select Validity
+                </option>
+                {validityOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <div className="invalid-feedback">Validity is required</div>
+            </div>
+
+            <div className="form-group col-lg-6">
+              <label htmlFor="description">Description</label>
+              <input
+                className="form-control"
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleOnChange}
+                placeholder="Enter card description"
+                rows="3"
+              />
+            </div>
+          </div>
 
           <div>
             <button
@@ -278,4 +213,4 @@ function AddAppointment() {
   );
 }
 
-export default AddAppointment;
+export default AddCard;
