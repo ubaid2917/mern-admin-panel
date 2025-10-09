@@ -186,7 +186,8 @@ const assignList = asyncErrorHandler(async (req, res) => {
     };
   }
 
-  const { count, rows } = await PatientCard.findAndCountAll({
+  const { count, rows } = await PatientCard.findAndCountAll({ 
+    attributes: { exclude: ["deleted", "patientId", "cardId"] },
     include: [
       {
         model: Patient,
