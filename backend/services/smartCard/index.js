@@ -4,6 +4,7 @@ const { SmartCard, Patient, PatientCard } = require("../../models");
 const { success, error } = require("../../utils/response");
 const { faker } = require("@faker-js/faker");
 const { Op, where } = require("sequelize");
+const { scheduleJob } = require("../../bullService/index");
 
 const create = asyncErrorHandler(async (req, res) => {
   try {
@@ -150,7 +151,7 @@ const assign = asyncErrorHandler(async (req, res) => {
 
     // discount from card
     req.body.discount = isExistCard.discount;
-    req.body.expiredAt = expiredAt; 
+    req.body.expiredAt = expiredAt;
 
     // Check if patient already has an active card
     const existingPatientCard = await PatientCard.findOne({
@@ -158,7 +159,7 @@ const assign = asyncErrorHandler(async (req, res) => {
         patientId,
         isExpired: false,
         expiredAt: {
-          [Op.gt]: new Date(), // Card is still valid
+          [Op.gt]: new Date(), 
         },
       },
     });
@@ -168,6 +169,14 @@ const assign = asyncErrorHandler(async (req, res) => {
     }
 
     const data = await PatientCard.create(req.body);
+
+    // schedule job
+    scheduleJob(
+      "card-expiry",
+      { id: data.id },
+      expiredAt.getTime() - Date.now()
+    );
+
     return success(res, TEXTS.CREATED, data, 201);
   } catch (err) {
     return error(res, "Failed to create record", [err.message], 500);
@@ -175,8 +184,7 @@ const assign = asyncErrorHandler(async (req, res) => {
 });
 
 const assignList = asyncErrorHandler(async (req, res) => {
- 
-   const { search } = req.query;
+  const { search } = req.query;
 
   let whereCondition = {};
 
@@ -186,13 +194,13 @@ const assignList = asyncErrorHandler(async (req, res) => {
     };
   }
 
-  const { count, rows } = await PatientCard.findAndCountAll({ 
+  const { count, rows } = await PatientCard.findAndCountAll({
     attributes: { exclude: ["deleted", "patientId", "cardId"] },
     include: [
       {
         model: Patient,
         as: "patient",
-        attributes: ["id", "name", "phone"], 
+        attributes: ["id", "name", "phone"],
         where: whereCondition,
       },
       {
@@ -223,5 +231,5 @@ module.exports = {
   getOne,
   del,
   assign,
-  assignList
+  assignList,
 };
