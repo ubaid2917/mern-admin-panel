@@ -10,7 +10,28 @@ const { authenticate } = require("./middlewares/auth.middleware");
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swaggerConfig');
 
+//  for bull queue  unless
+const { createBullBoard } = require('@bull-board/api');
+const { ExpressAdapter } = require('@bull-board/express');
+const { BullAdapter } = require('@bull-board/api/bullAdapter');
+
+const {
+  jobQueue,
+} = require('./bullService/index')
+
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath('/queues');
+
+createBullBoard({
+  queues: [
+    new BullAdapter(jobQueue),
+  ],
+  serverAdapter: serverAdapter,
+});
+
+
 const app = express();
+app.use('/queues', serverAdapter.getRouter()); 
 
 
 // Swagger API docs route
