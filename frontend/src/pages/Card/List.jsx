@@ -65,11 +65,11 @@ const getCardList = () => {
   async function handleBulkDelete() {
     try {
       const confirmDelete = window.confirm("Are you sure you want to delete selected records?");
-      if (confirmDelete) {  
+      if (confirmDelete) {
 
         console.log("selectedItems", selectedItems);
-           
-        await bulkDelete({ ids: selectedItems});
+
+        await bulkDelete({ ids: selectedItems });
 
         setMessage("Selected Records Deleted Successfully");
         setSelectedItems([]);
@@ -79,7 +79,6 @@ const getCardList = () => {
       alert("Something went wrong");
     }
   }
-
 
   //  Initial load
   useEffect(() => {
