@@ -99,11 +99,17 @@ const getCardList = () => {
         })}
       </td>
       <td>
-        {data.isDead ? (
-          <button className="btn btn-sm" style={{ background: "#ccc", color: "#666" }} disabled>
-            Edit
-          </button>
-        ) : (
+        
+          <Link
+            to={`/cards/assing/${data.id}`}
+            className="btn btn-sm btn-info me-2"
+            // style={{ background: "#212529", color: "#fff" }}
+          >
+            Assign
+          </Link>
+
+
+
           <Link
             to={`/cards/edit/${data.id}`}
             className="btn btn-sm"
@@ -111,7 +117,7 @@ const getCardList = () => {
           >
             Edit
           </Link>
-        )}
+
         <button
           onClick={() => handleDeleteUser(data.id)}
           className="btn btn-sm btn-danger ms-2"
