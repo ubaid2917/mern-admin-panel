@@ -127,7 +127,37 @@ const del = asyncErrorHandler(async (req, res) => {
   });
 
   return success(res, TEXTS.DELETED, null, 200);
+});   
+
+const bulkDelete = asyncErrorHandler(async (req, res) => {
+  let { ids } = req.body;
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return error(res, "No IDs provided for deletion", 400);
+  }
+
+  //  Filter only valid UUIDs (if using Postgres UUID)
+  ids = ids.filter(id => /^[0-9a-fA-F-]{36}$/.test(id));
+
+  if (ids.length === 0) {
+    return error(res, "No valid IDs provided", 400);
+  }
+
+  const deletedCount = await SmartCard.destroy({
+    where: {
+      id: {
+        [Op.in]: ids,
+      },
+    },
+  });
+
+  if (deletedCount === 0) {
+    return error(res, "No records found for the provided IDs", 404);
+  }
+
+  return success(res, `record(s) deleted successfully`, null, 200);
 });
+
 
 const assign = asyncErrorHandler(async (req, res) => {
   try {
@@ -230,6 +260,7 @@ module.exports = {
   get,
   getOne,
   del,
+  bulkDelete,
   assign,
   assignList,
 };

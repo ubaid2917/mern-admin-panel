@@ -13,6 +13,7 @@ router.get("/get", cardService.get);
 router.get("/get/:id", cardService.getOne)
 router.patch("/update/:id", cardService.update);
 router.delete("/delete/:id", cardService.del);
+router.delete("/bulk-delete", cardService.bulkDelete);
 
 
 router.post("/assign", validate(validationSchemas.patientCard), cardService.assign);
