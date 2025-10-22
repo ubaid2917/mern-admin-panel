@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { deleteRec, getList } from "../../API/card";
+import { deleteRec, getList, bulkDelete } from "../../API/card";
 import Message from "../../components/Message";
 import Pagination from "../../components/Pagination";
 import Table from "../../components/Table";
@@ -65,11 +65,11 @@ const getCardList = () => {
   async function handleBulkDelete() {
     try {
       const confirmDelete = window.confirm("Are you sure you want to delete selected records?");
-      if (confirmDelete) {
-        for (const id of selectedItems) {
+      if (confirmDelete) {  
 
-          await deleteRec(id);
-        }
+        console.log("selectedItems", selectedItems);
+           
+        await bulkDelete({ ids: selectedItems});
 
         setMessage("Selected Records Deleted Successfully");
         setSelectedItems([]);
@@ -80,11 +80,10 @@ const getCardList = () => {
     }
   }
 
-  const handleClick = (value) => setSelectedOPD(value);
 
   //  Initial load
   useEffect(() => {
-    getCardList({ page: 1, limit: 50 });
+    getCardList();
   }, []);
 
   // Search with debounce

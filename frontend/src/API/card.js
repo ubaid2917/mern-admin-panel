@@ -64,3 +64,15 @@ export const deleteRec = async (data) => {
   };
   return invokeApi(reqObj);
 };
+// bulk delete records
+export const bulkDelete = async (data) => {
+  const reqObj = {
+    path: `/smartcard/bulk-delete`,
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    postData:  data ,
+  };
+  return invokeApi(reqObj);
+};
