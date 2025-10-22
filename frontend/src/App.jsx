@@ -24,7 +24,7 @@ function App() {
       socket.on('welcome', (message) => {
         console.log(message);
       })
-      
+
     } else {
       localStorage.removeItem("token");
 
@@ -73,9 +73,6 @@ function App() {
 
         )
       }
-
-
-
 
     </>
   );

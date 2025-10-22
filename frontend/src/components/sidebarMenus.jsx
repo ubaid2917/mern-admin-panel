@@ -7,6 +7,7 @@ export const sidebarMenus = {
         { name: "Smart Card", path: "/cards/list" },
         { name: "Appointment", path: "/appointments/list" },
         { name: "Category", path: "/category" },
+        { name: "Chat", path: "/chat/list" },
         {
             name: "Doctor Details",
             dropdown: [
