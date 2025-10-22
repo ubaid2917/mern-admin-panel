@@ -10,6 +10,7 @@ const getCardList = () => {
   const [message, setMessage] = useState(false);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const getCardList = async ({ page, limit }) => {
     try {
@@ -45,6 +46,40 @@ const getCardList = () => {
     setSearch(e.target.value);
   };
 
+  const handleSelect = (id) => {
+    setSelectedItems((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedItems(data.map((item) => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
+  async function handleBulkDelete() {
+    try {
+      const confirmDelete = window.confirm("Are you sure you want to delete selected records?");
+      if (confirmDelete) {
+        for (const id of selectedItems) {
+
+          await deleteRec(id);
+        }
+
+        setMessage("Selected Records Deleted Successfully");
+        setSelectedItems([]);
+        getCardList({ page: 1, limit: 50 });
+      }
+    } catch (error) {
+      alert("Something went wrong");
+    }
+  }
+
   const handleClick = (value) => setSelectedOPD(value);
 
   //  Initial load
@@ -65,6 +100,11 @@ const getCardList = () => {
 
   //  define table headers
   const headers = [
+    <input
+      type="checkbox"
+      onChange={handleSelectAll}
+      checked={selectedItems.length === data.length && data.length > 0}
+    />,
     "#",
     "name",
     "minVisits",
@@ -79,6 +119,13 @@ const getCardList = () => {
   //  define how each row is rendered
   const renderRow = (data, index) => (
     <tr key={data.id} className="align-middle">
+      <td>
+        <input
+          type="checkbox"
+          checked={selectedItems.includes(data.id)}
+          onChange={() => handleSelect(data.id)}
+        />
+      </td>
       <td>{index + 1}</td>
       <td>{data.name || "N/A"}</td>
       <td>{data.minVisits || "N/A"}</td>
@@ -99,24 +146,17 @@ const getCardList = () => {
         })}
       </td>
       <td>
-        
-          <Link
-            to={`/cards/assing/${data.id}`}
-            className="btn btn-sm btn-info me-2"
-            // style={{ background: "#212529", color: "#fff" }}
-          >
-            Assign
-          </Link>
 
 
 
-          <Link
-            to={`/cards/edit/${data.id}`}
-            className="btn btn-sm"
-            style={{ background: "#212529", color: "#fff" }}
-          >
-            Edit
-          </Link>
+
+        <Link
+          to={`/cards/edit/${data.id}`}
+          className="btn btn-sm"
+          style={{ background: "#212529", color: "#fff" }}
+        >
+          Edit
+        </Link>
 
         <button
           onClick={() => handleDeleteUser(data.id)}
@@ -141,6 +181,15 @@ const getCardList = () => {
             <Link to="/cards/add" className="btn" style={{ background: "#212529", color: "#fff" }}>
               Add Card
             </Link>
+            {selectedItems.length > 0 && (
+              <button
+                onClick={handleBulkDelete}
+                className="btn btn-danger ms-2"
+              >
+                Delete Selected ({selectedItems.length})
+              </button>
+            )}
+
           </div>
 
         </div>
@@ -149,7 +198,7 @@ const getCardList = () => {
           <div className="card-body">
             {/* Tabs + Search */}
             <div style={{ marginBottom: "40px" }}>
-              <div className="mb-3" style={{ width: "300px", float: "right"  }}>
+              <div className="mb-3" style={{ width: "300px", float: "right" }}>
                 <input
                   type="search"
                   className="form-control"
@@ -157,9 +206,9 @@ const getCardList = () => {
                   onChange={handleSearch}
                   placeholder="Search"
                 />
-              </div>  
-            </div> 
-  <br />
+              </div>
+            </div>
+            <br />
 
 
             {/* ✅ Reusable Table */}
