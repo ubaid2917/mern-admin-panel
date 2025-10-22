@@ -6,6 +6,8 @@ import RoutesComp from "./route";
 import Sidebar from "./components/Sidebar";
 import Message from "./components/Message";
 import { Route, Routes, Navigate, useNavigate } from "react-router";
+import useSocket from "./hooks/useSocket";
+import { connectSocket, getSocket } from "./socket/Socket";
 
 function App() {
 
@@ -16,10 +18,26 @@ function App() {
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
+      connectSocket(token);
+      const socket = getSocket();
+
+      socket.on('welcome', (message) => {
+        console.log(message);
+      })
+      
     } else {
       localStorage.removeItem("token");
+
       navigate("/auth/login",)
+      return () => {
+        const socket = getSocket();
+        if (socket) {
+          socket.disconnect();
+        }
+      }
+
     }
+
   }, [token])
 
   return (
@@ -40,7 +58,7 @@ function App() {
               <div style={{ width: "10vw", }}>
                 <Sidebar setToken={setToken} />
               </div>
-              <div className="flex-grow-1" style={{ width: "90vw",overflow: "hidden" }}>
+              <div className="flex-grow-1" style={{ width: "90vw", overflow: "hidden" }}>
                 <Topbar />
                 <div className="p-4">
                   <RoutesComp />
