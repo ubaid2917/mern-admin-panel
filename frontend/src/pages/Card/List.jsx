@@ -145,9 +145,6 @@ const getCardList = () => {
       </td>
       <td>
 
-
-
-
         <Link
           to={`/cards/edit/${data.id}`}
           className="btn btn-sm"
