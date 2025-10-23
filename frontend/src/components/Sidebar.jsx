@@ -32,7 +32,7 @@ function Sidebar({ setToken }) {
   return (
     <div
       className="bg-dark text-white vh-100 p-3 mt:2"
-      style={{ width: "10vw" }}
+      style={{ width: "15vw" }}
     >
       <h4>{role === "doctor" ? "Doctor Panel" : "Admin Panel"}</h4>
 
