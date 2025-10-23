@@ -9,7 +9,8 @@ const { upload } = require("../../utils/multer");
 
 router.post("/send-message",    chatService.create);
 
-router.get("/get", chatService.get);
+router.get("/get-messages/:receiverId", chatService.get); 
+router.post("/mark-as-read", chatService.markAsRead);
 router.get("/get/:id", chatService.getOne)
 router.patch("/update/:id", chatService.update);
 router.delete("/delete/:id", chatService.del);

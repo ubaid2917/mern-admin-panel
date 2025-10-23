@@ -58,7 +58,42 @@ const create = asyncErrorHandler(async (req, res) => {
   } catch (err) {
     return error(res, "Failed to create record", [err.message], 500);
   }
+});  
+
+const markAsRead = asyncErrorHandler(async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { chatId } = req.body;  
+
+
+    if (!chatId) {
+      return error(res, "Chat ID is required", 400);
+    }
+
+    //  Update all unread messages for this user in this chat
+    const [updatedCount] = await ChatMessages.update(
+      { isRead: true },
+      {
+        where: {
+          chatId,
+          receiverId: userId,
+          isRead: false,
+        },
+      }
+    );
+
+    // Emit only if there were messages updated
+    if (updatedCount > 0) {
+      const io = req.app.get("io"); 
+      io.emit("messagesRead", { chatId, userId }); 
+    }
+
+    return success(res, "Messages marked as read", null, 200);
+  } catch (err) {
+    return error(res, "Failed to mark messages as read", [err.message], 500);
+  }
 });
+
 
 const update = asyncErrorHandler(async (req, res) => {
   const { id } = req.params;
@@ -79,31 +114,40 @@ const update = asyncErrorHandler(async (req, res) => {
 });
 
 const get = asyncErrorHandler(async (req, res) => {
-  const { search } = req.query;
+ try {
+    const userId = req.user.id; 
+     
+    const {receiverId} = req.params; 
 
-  let whereCondition = {};
+    if (!receiverId) {
+      return error(res, "Receiver ID is required", 400);
+    }
 
-  if (search) {
-    whereCondition = {
-      [Op.or]: [{ name: { [Op.iLike]: `%${search}%` } }],
-    };
-  }
+    // Check if chat exists between sender and receiver
+    let chat = await Chat.findOne({
+      where: {
+        [Op.or]: [
+          { firstParticipant: userId, secondParticipant: receiverId },
+          { firstParticipant: receiverId, secondParticipant: userId },
+        ],
+      },
+    });
 
-  const { count, rows } = await Department.findAndCountAll({
-    order: [["created", "DESC"]],
-    ...req.pagination,
-    where: whereCondition,
-  });
+    if (!chat) {
+      return success(res, "No chat found", []);
+    }
 
-  res.status(STATUS_CODES.SUCCESS).json({
-    statusCode: 200,
-    message: TEXTS.FOUND,
-    data: rows,
-    count,
-    limit: req.pagination.limit,
-    page: req.pagination.offset / req.pagination.limit + 1,
-    pageCount: Math.ceil(count / req.pagination.limit),
-  });
+    // Fetch messages of this chat
+    const messages = await ChatMessages.findAll({
+      where: { chatId: chat.id },
+      order: [["created", "ASC"]],
+    });
+
+    return success(res, "Messages fetched successfully", { messages });
+
+ } catch (err) {
+    return error(res, "Failed to fetch records", [err.message], 500);
+ }
 });
 const getOne = asyncErrorHandler(async (req, res) => {
   const { id } = req.params;
@@ -132,6 +176,7 @@ const del = asyncErrorHandler(async (req, res) => {
 
 module.exports = {
   create,
+  markAsRead,
   update,
   get,
   getOne,

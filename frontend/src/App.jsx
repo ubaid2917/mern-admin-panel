@@ -23,7 +23,7 @@ function App() {
 
       socket.on('welcome', (message) => {
         console.log(message);
-      })
+      })  
 
     } else {
       localStorage.removeItem("token");
@@ -54,13 +54,13 @@ function App() {
         ) : (
           <>
 
-            <div style={{ display: "flex", width: "100vw", height: "100vh", overflow: "hidden" }}>
+            <div style={{ display: "flex", width: "100vw", height: "100vh", overflow: "auto" }}>
               <div style={{ width: "15vw", }}>
                 <Sidebar setToken={setToken} />
               </div>
-              <div className="flex-grow-1" style={{ width: "85vw", overflow: "hidden" }}>
+              <div className="flex-grow-1" style={{ width: "85vw", overflow: "auto" }}>
                 <Topbar />
-                <div className="p-4">
+                <div className="">
                   <RoutesComp />
                 </div>
               </div>

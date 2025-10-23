@@ -75,7 +75,7 @@ function Sidebar({ setToken }) {
           style={{
             position: "absolute",
             fontSize: "18px",
-            bottom: "50px",
+            bottom: "20px",
             left: "20px",
           }}
         >

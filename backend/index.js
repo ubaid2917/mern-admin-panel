@@ -3,7 +3,7 @@ const { sequelize } = require("./models/index");
 const app = require("./app");
 const PORT = 5000;
 const { Server } = require("socket.io");  
-
+const socketHandler = require("./sockets/socket");
 // http server
 const server = require("http").createServer(app);
 
@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
   });
 })
-
+socketHandler(io);
 app.set("io", io);
 
 // Middleware to parse JSON

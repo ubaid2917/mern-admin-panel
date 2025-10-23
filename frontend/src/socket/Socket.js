@@ -11,4 +11,4 @@ export const connectSocket = (token) => {
     })
 } 
 
-export const getSocket = () =>  socket;
+export  const  getSocket = () =>  socket;
