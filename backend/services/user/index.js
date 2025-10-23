@@ -1,7 +1,7 @@
 const asyncErrorHandler = require("../../utils/asyncErrorHandler");
 const { STATUS_CODES, TEXTS } = require("../../config/constants");
-const { User } = require("../../models");
-const { where } = require("sequelize");
+const { sequelize, User , Chat} = require("../../models");
+const { where , QueryTypes} = require("sequelize");
 const { success, error } = require("../../utils/response");
 const bcrypt = require('bcrypt'); 
 const { Op } = require("sequelize"); 
@@ -79,40 +79,84 @@ const update = asyncErrorHandler(async (req, res) => {
 });
 
 const get = asyncErrorHandler(async (req, res) => {  
+  const limit = parseInt(req.query.limit) || 10;
+  const page = parseInt(req.query.page) || 1;
+  const offset = (page - 1) * limit;
+  const search = req.query.search ? req.query.search.trim() : null;
+  
+  // Assuming you have the current user's ID from authentication
+  const currentUserId = req.user.id; // or however you access the logged-in user
 
-  const {search} = req.query;  
-  // seed()
+  let whereClause = `WHERE u.deleted IS NULL AND u.id != :currentUserId`;
+  const replacements = { limit, offset, currentUserId };
 
-  let whereCondition = {};
-   
-  // just search on email
-  if(search){
-   whereCondition = {
-     [Op.or] : [
-      { name: { [Op.iLike]: `%${search}%` } },
-      { email: { [Op.iLike]: `%${search}%` } },
-      { phone: { [Op.iLike]: `%${search}%` } },
-     ]
-
-   }
-     
-   {email:search}
+  if (search) {
+    whereClause += ` AND (u.name ILIKE :search OR u.email ILIKE :search OR u.phone ILIKE :search)`;
+    replacements.search = `%${search}%`;
   }
 
-  const { count, rows } = await User.findAndCountAll({
-    order: [["created", "DESC"]],
-    ...req.pagination, 
-    where: whereCondition
-  });
+  const users = await sequelize.query(
+    `
+    SELECT 
+      u.*,
+      (
+        SELECT c."lastMessage"
+        FROM "chat" c
+        WHERE c.deleted IS NULL 
+        AND (
+          (c."firstParticipant" = :currentUserId AND c."secondParticipant" = u.id) 
+          OR 
+          (c."secondParticipant" = :currentUserId AND c."firstParticipant" = u.id)
+        )
+        ORDER BY c.created DESC
+        LIMIT 1
+      ) AS "lastMessage",
+      (
+        SELECT c."isRead"
+        FROM "chat" c
+        WHERE c.deleted IS NULL 
+        AND (
+          (c."firstParticipant" = :currentUserId AND c."secondParticipant" = u.id) 
+          OR 
+          (c."secondParticipant" = :currentUserId AND c."firstParticipant" = u.id)
+        )
+        ORDER BY c.created DESC
+        LIMIT 1
+      ) AS "lastMessageRead",
+      (
+        SELECT c.created
+        FROM "chat" c
+        WHERE c.deleted IS NULL 
+        AND (
+          (c."firstParticipant" = :currentUserId AND c."secondParticipant" = u.id) 
+          OR 
+          (c."secondParticipant" = :currentUserId AND c."firstParticipant" = u.id)
+        )
+        ORDER BY c.created DESC
+        LIMIT 1
+      ) AS "lastMessageCreated"
+    FROM "user" u
+    ${whereClause}
+    ORDER BY "lastMessageCreated" DESC NULLS LAST, u.created DESC
+    LIMIT :limit OFFSET :offset
+    `,
+    { replacements, type: QueryTypes.SELECT }
+  );
 
-  res.status(STATUS_CODES.SUCCESS).json({
+  const totalCountResult = await sequelize.query(
+    `SELECT COUNT(*) AS count FROM "user" u ${whereClause}`,
+    { replacements, type: QueryTypes.SELECT }
+  );
+  const totalCount = parseInt(totalCountResult[0].count);
+
+  res.status(200).json({
     statusCode: 200,
-    message: TEXTS.FOUND,
-    data: rows,
-    count,
-    limit: req.pagination.limit,
-    page: req.pagination.offset / req.pagination.limit + 1,
-    pageCount: Math.ceil(count / req.pagination.limit),
+    message: "Users fetched successfully",
+    data: users,
+    count: totalCount,
+    limit,
+    page,
+    pageCount: Math.ceil(totalCount / limit),
   });
 });
 const getOne = asyncErrorHandler(async (req, res) => {

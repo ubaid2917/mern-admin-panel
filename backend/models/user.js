@@ -22,6 +22,9 @@ class User extends BaseModel {
         zip: DataTypes.STRING,
         password: DataTypes.STRING,
         role: DataTypes.ENUM("user", "admin", "doctor", "patient"),
+        created: DataTypes.DATE,
+        updated: DataTypes.DATE,
+        deleted: DataTypes.DATE,
       },
       {
         modelName: "User",  
@@ -30,13 +33,16 @@ class User extends BaseModel {
           where: {
             deleted: null,
           },
+          
         },
       }
     );
   }
 
   static associate(models) {
-    // relationships here
+    User.hasMany(models.Chat, { foreignKey: "firstParticipant", as: "chatsAsFirst" });
+    User.hasMany(models.Chat, { foreignKey: "secondParticipant", as: "chatsAsSecond" });
+   
   }
 }
 

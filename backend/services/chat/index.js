@@ -33,6 +33,7 @@ const create = asyncErrorHandler(async (req, res) => {
         firstParticipant: senderId,
         secondParticipant: receiverId,
         lastMessage: message,
+        isRead: false,
       });
     }
 
@@ -47,7 +48,7 @@ const create = asyncErrorHandler(async (req, res) => {
     });
 
     // Update last message in chat
-    await chat.update({ lastMessage: message });
+    await chat.update({ lastMessage: message, isRead: false });
 
     // Emit real-time event to receiver
     io.to(receiverId).emit("messageReceived", { newMessage });
@@ -81,9 +82,10 @@ const markAsRead = asyncErrorHandler(async (req, res) => {
         },
       }
     );
-
+       
     // Emit only if there were messages updated
     if (updatedCount > 0) {
+      await Chat.update({ isRead: true }, { where: { id: chatId , [Op.or]: [{ firstParticipant: userId }, { secondParticipant: userId }]} });
       const io = req.app.get("io"); 
       io.emit("messagesRead", { chatId, userId }); 
     }

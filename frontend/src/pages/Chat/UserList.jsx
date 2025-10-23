@@ -8,7 +8,7 @@ const ChatLayout = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [search, setSearch] = useState("");
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage, ] = useState("");
+  const [newMessage, setNewMessage,] = useState("");
 
   const debounceTimeout = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -40,26 +40,26 @@ const ChatLayout = () => {
     if (!socket) return;
 
     socket.on("messageReceived", async ({ newMessage }) => {
-  if (
-    selectedUser &&
-    (newMessage.senderId === selectedUser.id ||
-      newMessage.receiverId === selectedUser.id)
-  ) {
-    setMessages((prev) => {
-      const exists = prev.some((m) => m.id === newMessage.id);
-      return exists ? prev : [...prev, newMessage];
-    });
+      if (
+        selectedUser &&
+        (newMessage.senderId === selectedUser.id ||
+          newMessage.receiverId === selectedUser.id)
+      ) {
+        setMessages((prev) => {
+          const exists = prev.some((m) => m.id === newMessage.id);
+          return exists ? prev : [...prev, newMessage];
+        });
 
-    //If receiver currently viewing this chat — mark message as read instantly
-    if (newMessage.receiverId === loggedInUserId) {
-      try {
-        await seenMessage({ chatId: newMessage.chatId });
-      } catch (err) {
-        console.error("Failed to mark message as read in real-time", err);
+        //If receiver currently viewing this chat — mark message as read instantly
+        if (newMessage.receiverId === loggedInUserId) {
+          try {
+            await seenMessage({ chatId: newMessage.chatId });
+          } catch (err) {
+            console.error("Failed to mark message as read in real-time", err);
+          }
+        }
       }
-    }
-  }
-});
+    });
 
 
     socket.on("messageSent", ({ newMessage }) => {
@@ -83,6 +83,16 @@ const ChatLayout = () => {
           msg.receiverId === userId ? { ...msg, isRead: true } : msg
         )
       );
+
+      // Update lastMessageRead in user list
+      setUsers((prevUsers) =>
+        prevUsers.map((u) => {
+          if (u.id === userId) {
+            return { ...u, lastMessageRead: true };
+          }
+          return u;
+        })
+      );
     });
 
     return () => {
@@ -96,6 +106,8 @@ const ChatLayout = () => {
     try {
       const response = await getUserList(searchText, 100, 1);
       if (response.status === 200) setUsers(response?.data?.data);
+
+      console.log("response ============>", response?.data?.data);
     } catch (err) {
       console.error("Error fetching users", err);
     }
@@ -123,10 +135,10 @@ const ChatLayout = () => {
 
           // Mark all messages as read when opening chat
           if (socket && cleanMessages.length > 0) {
-             const chatId = cleanMessages[0]?.chatId;  
+            const chatId = cleanMessages[0]?.chatId;
 
-             console.log("chatId", chatId)
-              await seenMessage({ chatId });
+            console.log("chatId", chatId)
+            await seenMessage({ chatId });
           }
         }
       } catch (err) {
@@ -193,15 +205,18 @@ const ChatLayout = () => {
             users.map((user) => (
               <div
                 key={user.id}
-                className={`p-3 border-bottom user-item ${
-                  selectedUser?.id === user.id ? "bg-light" : ""
-                }`}
+                className={`p-3 border-bottom user-item ${selectedUser?.id === user.id ? "bg-light" : ""
+                  }`}
                 style={{ cursor: "pointer" }}
                 onClick={() => setSelectedUser(user)}
               >
                 <strong>{user.name}</strong>
                 <br />
-                <small className="text-muted">{user.email}</small>
+                {user.lastMessage && (
+                  <span>
+                    {user.lastMessage} {user.lastMessageRead ? "✅✅" : "✅"}
+                  </span>
+                )}
               </div>
             ))
           )}
@@ -235,11 +250,10 @@ const ChatLayout = () => {
                   messages.map((msg, index) => (
                     <div
                       key={index}
-                      className={`mb-3 d-flex ${
-                        msg.senderId === loggedInUserId
-                          ? "justify-content-end"
-                          : "justify-content-start"
-                      }`}
+                      className={`mb-3 d-flex ${msg.senderId === loggedInUserId
+                        ? "justify-content-end"
+                        : "justify-content-start"
+                        }`}
                     >
                       <div style={{ maxWidth: "70%" }}>
                         <div

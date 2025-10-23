@@ -33,7 +33,8 @@ class ChatMessages extends BaseModel {
   }
 
   static associate(models) {
-    // define association here
+    // define association here  
+    this.belongsTo(models.Chat, { foreignKey: 'chatId', as: 'chat' });
   }
 }
 
