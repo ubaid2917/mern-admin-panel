@@ -7,5 +7,6 @@ router.use('/department', require('../controllers/department/index'))
 router.use('/doctor', require('../controllers/doctor/index'))
 router.use('/appointment', require('../controllers/appointment/index'))
 router.use('/smartcard', require('../controllers/smartCard/index'))
+router.use('/chat', require('../controllers/chat/index'))
 
 module.exports = router

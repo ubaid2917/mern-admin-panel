@@ -1,13 +1,14 @@
 'use strict';
 const BaseModel = require('./baseModel');
+const { DataTypes } = require('sequelize');
 
 class ChatMessages extends BaseModel {
-  static initModel(sequelize, DataTypes) {
+  static initModel(sequelize) {
     return super.initBase(
       sequelize,
       {
         senderId: DataTypes.UUID,
-        senderId: DataTypes.UUID,
+        receiverId: DataTypes.UUID,
         type: DataTypes.ENUM('text', 'image', 'file'),
         message: DataTypes.TEXT,
         chatId: DataTypes.UUID,

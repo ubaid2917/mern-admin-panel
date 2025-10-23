@@ -1,19 +1,14 @@
-"use strict";
-const { Model } = require("sequelize");
-module.exports = (sequelize, DataTypes) => {
-  class Chat extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  }
-  Chat.init(
-    {
-      firstParticipant: {
+'use strict';
+const BaseModel = require('./baseModel'); 
+const { DataTypes } = require('sequelize');
+
+
+class Chat extends BaseModel {
+  static initModel(sequelize) {
+    return super.initBase(
+      sequelize,
+      {
+       firstParticipant: {
         type: DataTypes.UUID,
         allowNull: false,
       },
@@ -30,20 +25,28 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
-    },
-    {
-      sequelize,
-      modelName: "Chat",
-      tableName: "chat",
-      createdAt: "created",
-      updatedAt: "updated",
-      deletedAt: "deleted",
-      defaultScope: {
-        where: {
-          deleted: null,
-        },
       },
-    }
-  );
-  return Chat;
-};
+      {
+        modelName: 'Chat',
+        tableName: 'chat',
+        createdAt: 'created',
+        updatedAt: 'updated',
+        deletedAt: 'deleted',
+        
+      },
+      {
+        defaultScope: {
+          where: {
+            deleted: null,
+          },
+        },
+      }
+    );
+  }
+
+  static associate(models) {
+    // define association here
+  }
+}
+
+module.exports = Chat;

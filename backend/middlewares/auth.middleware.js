@@ -17,7 +17,14 @@ const authenticate = async (req, res, next) => {
         .status(STATUS_CODES.UNAUTHORIZED)
         .json({ message: TEXTS.INVALID_AUTH_TOKEN });
     } else {
-      req.user = result.decoded;
+      const decodedUser = result.decoded;
+
+      if (decodedUser?.dataValues) {
+        req.user = decodedUser.dataValues;
+      } else {
+        req.user = decodedUser;
+      }
+
       next();
     }
   } else {
