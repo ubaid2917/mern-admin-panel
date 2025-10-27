@@ -66,7 +66,6 @@ const markAsRead = asyncErrorHandler(async (req, res) => {
     const userId = req.user.id;
     const { chatId } = req.body;  
 
-
     if (!chatId) {
       return error(res, "Chat ID is required", 400);
     }
